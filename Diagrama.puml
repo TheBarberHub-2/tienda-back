@@ -1,0 +1,76 @@
+@startuml
+title Sistema Tienda-Peluquería - Herencia UsuarioAplicacion
+
+abstract class UsuarioAplicacion {
+  id
+  nombre
+  email
+  contraseña
+  -- Reglas --
+  email válido
+  contraseña >= 8 caracteres
+}
+
+class Cliente {
+  telefono
+  direccion
+}
+
+class Peluqueria {
+  direccion
+  telefono
+  horario
+}
+
+class Reserva {
+  id
+  fechaHora
+  servicio
+  estado
+  -- Reglas --
+  fechaHora >= ahora
+  servicio no vacío
+}
+
+class Order {
+  id
+  fecha
+  total : BigDecimal
+  estado
+  -- Reglas --
+  total > 0
+}
+
+class OrderLine {
+  cantidad : int
+  precioUnitario : BigDecimal
+  subtotal : BigDecimal
+  -- Reglas --
+  subtotal = cantidad * precioUnitario
+  cantidad > 0
+  precioUnitario > 0
+}
+
+class MethodPayment {
+  id
+  tipo : String
+  estado
+  -- Reglas --
+  tipo in {"Tarjeta", "Efectivo", "Transferencia"}
+}
+
+' Herencia
+UsuarioAplicacion <|-- Cliente
+UsuarioAplicacion <|-- Peluqueria
+
+' Relaciones
+Cliente "1" -- "0..*" Reserva : realiza >
+Reserva "*" --> "1" Peluqueria : < pertenece a
+
+Cliente "1" -- "0..*" Order : realiza >
+Order "1" -- "1..*" OrderLine : contiene >
+Order "1" -- "1" MethodPayment : usa >
+
+Peluqueria "1" -- "0..*" Cliente : < puede ver info de
+
+@enduml
