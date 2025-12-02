@@ -1,0 +1,32 @@
+package com.fpmislata.daw.tienda.persistence;
+
+import org.springframework.boot.persistence.autoconfigure.EntityScan;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import com.fpmislata.daw.tienda.persistence.dao.jpa.CategoriaJpaDao;
+import com.fpmislata.daw.tienda.persistence.dao.jpa.PeluqueriaJpaDao;
+import com.fpmislata.daw.tienda.persistence.dao.jpa.ProductoJpaDao;
+import com.fpmislata.daw.tienda.persistence.dao.jpa.impl.CategoriaJpaDaoImpl;
+import com.fpmislata.daw.tienda.persistence.dao.jpa.impl.PeluqueriaJpaDaoImpl;
+import com.fpmislata.daw.tienda.persistence.dao.jpa.impl.ProductoJpaDaoImpl;
+
+@Configuration
+@EntityScan(basePackages = "com.fpmislata.daw.tienda.persistence.dao.jpa.entity")
+public class PersistenceConfig {
+
+    @Bean
+    public PeluqueriaJpaDao peluqueriaJpaDao() {
+        return new PeluqueriaJpaDaoImpl();
+    }
+
+    @Bean
+    public CategoriaJpaDao categoriaJpaDao() {
+        return new CategoriaJpaDaoImpl();
+    }
+
+    @Bean
+    public ProductoJpaDao productoJpaDao() {
+        return new ProductoJpaDaoImpl();
+    }
+}
