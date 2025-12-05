@@ -28,7 +28,7 @@ public class PeluqueriaJpaDaoImpl implements PeluqueriaJpaDao {
     }
 
     @Override
-    public Optional<PeluqueriaJpaEntity> findById(int id) {
+    public Optional<PeluqueriaJpaEntity> findById(long id) {
         return Optional.ofNullable(entityManager.find(PeluqueriaJpaEntity.class, id));
     }
 
@@ -57,6 +57,20 @@ public class PeluqueriaJpaDaoImpl implements PeluqueriaJpaDao {
     public long count() {
         return entityManager.createQuery("SELECT COUNT(p) FROM PeluqueriaJpaEntity p", Long.class)
                 .getSingleResult();
+    }
+
+    @Override
+    public Optional<PeluqueriaJpaEntity> findByUsuario(long usuarioId) {
+        String sql = "SELECT p FROM PeluqueriaJpaEntity p WHERE p.usuario.id = :usuarioId";
+        TypedQuery<PeluqueriaJpaEntity> query = entityManager.createQuery(sql, PeluqueriaJpaEntity.class);
+        query.setParameter("usuarioId", usuarioId);
+
+        List<PeluqueriaJpaEntity> results = query.getResultList();
+        if (results.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(results.get(0));
+        }
     }
 
 }

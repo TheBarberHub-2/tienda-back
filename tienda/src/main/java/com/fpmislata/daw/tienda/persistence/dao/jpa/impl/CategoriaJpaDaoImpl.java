@@ -27,7 +27,7 @@ public class CategoriaJpaDaoImpl implements CategoriaJpaDao {
     }
 
     @Override
-    public Optional<CategoriaJpaEntity> findById(int id) {
+    public Optional<CategoriaJpaEntity> findById(long id) {
         return Optional.ofNullable(entityManager.find(CategoriaJpaEntity.class, id));
     }
 

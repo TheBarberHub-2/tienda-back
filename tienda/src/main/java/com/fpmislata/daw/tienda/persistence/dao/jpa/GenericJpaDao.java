@@ -6,7 +6,7 @@ import java.util.Optional;
 public interface GenericJpaDao<T> {
     List<T> findAll(int page, int size);
 
-    Optional<T> findById(int id);
+    Optional<T> findById(long id);
 
     T insert(T entity);
 

@@ -27,7 +27,7 @@ public class ProductoJpaDaoImpl implements ProductoJpaDao {
     }
 
     @Override
-    public Optional<ProductoJpaEntity> findById(int id) {
+    public Optional<ProductoJpaEntity> findById(long id) {
         return Optional.ofNullable(entityManager.find(ProductoJpaEntity.class, id));
     }
 
