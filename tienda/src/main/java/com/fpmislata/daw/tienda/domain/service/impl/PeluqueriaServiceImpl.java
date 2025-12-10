@@ -3,14 +3,14 @@ package com.fpmislata.daw.tienda.domain.service.impl;
 import java.util.List;
 import java.util.Optional;
 
-import com.fpmislata.daw.tienda.domain.exception.BusinessException;
-import com.fpmislata.daw.tienda.domain.exception.ResourceNotFoundException;
 import com.fpmislata.daw.tienda.domain.mapper.PeluqueriaMapper;
 import com.fpmislata.daw.tienda.domain.model.Page;
 import com.fpmislata.daw.tienda.domain.repository.PeluqueriaRepository;
 import com.fpmislata.daw.tienda.domain.repository.entity.PeluqueriaEntity;
 import com.fpmislata.daw.tienda.domain.service.PeluqueriaService;
 import com.fpmislata.daw.tienda.domain.service.dto.PeluqueriaDto;
+import com.fpmislata.daw.tienda.exception.BusinessException;
+import com.fpmislata.daw.tienda.exception.ResourceNotFoundException;
 
 import jakarta.transaction.Transactional;
 
@@ -42,7 +42,7 @@ public class PeluqueriaServiceImpl implements PeluqueriaService {
     public PeluqueriaDto getById(long id) {
         return peluqueriaRepository.findById(id).map(PeluqueriaMapper.getInstance()::fromEntityToModel)
                 .map(PeluqueriaMapper.getInstance()::fromModelToDto)
-                .orElseThrow(() -> new RuntimeException("Peluqueria with id " + id + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Peluqueria with id " + id + " not found"));
     }
 
     @Override
@@ -55,7 +55,7 @@ public class PeluqueriaServiceImpl implements PeluqueriaService {
     @Transactional
     public PeluqueriaDto create(PeluqueriaDto peluqueriaDto) {
         if (peluqueriaRepository.findByUsuario(peluqueriaDto.usuario().id()).isPresent()) {
-            throw new BusinessException("A peluqueria with the same usuario already exists");
+            throw new BusinessException("Ya existe una peluquería con este usuario.");
         }
 
         PeluqueriaEntity peluqueriaEntity = PeluqueriaMapper.getInstance().fromModelToEntity(
@@ -80,6 +80,7 @@ public class PeluqueriaServiceImpl implements PeluqueriaService {
     }
 
     @Override
+    @Transactional
     public void delete(long id) {
         Optional<PeluqueriaDto> peluqueriaDto = findById(id);
 

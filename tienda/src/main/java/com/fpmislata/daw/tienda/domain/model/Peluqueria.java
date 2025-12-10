@@ -3,7 +3,7 @@ package com.fpmislata.daw.tienda.domain.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fpmislata.daw.tienda.domain.exception.BusinessException;
+import com.fpmislata.daw.tienda.exception.BusinessException;
 
 public class Peluqueria {
 
@@ -21,7 +21,7 @@ public class Peluqueria {
         this.municipio = municipio;
         this.direccion = direccion;
         this.telefono = telefono;
-        this.productos = (productos.isEmpty()) ? new ArrayList<>() : new ArrayList<>(productos);
+        this.productos = (productos == null) ? new ArrayList<>() : new ArrayList<>(productos);
     }
 
     public Long getId() {

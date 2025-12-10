@@ -3,7 +3,7 @@ package com.fpmislata.daw.tienda.persistence.dao.jpa.impl;
 import java.util.List;
 import java.util.Optional;
 
-import com.fpmislata.daw.tienda.domain.exception.ResourceNotFoundException;
+import com.fpmislata.daw.tienda.exception.ResourceNotFoundException;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.PeluqueriaJpaDao;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.entity.PeluqueriaJpaEntity;
 

@@ -1,4 +1,4 @@
-package com.fpmislata.daw.tienda.domain.exception;
+package com.fpmislata.daw.tienda.exception;
 
 public class BusinessException extends RuntimeException {
 

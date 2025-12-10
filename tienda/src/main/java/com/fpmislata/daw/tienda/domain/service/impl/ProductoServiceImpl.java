@@ -3,13 +3,13 @@ package com.fpmislata.daw.tienda.domain.service.impl;
 import java.util.List;
 import java.util.Optional;
 
-import com.fpmislata.daw.tienda.domain.exception.ResourceNotFoundException;
 import com.fpmislata.daw.tienda.domain.mapper.ProductoMapper;
 import com.fpmislata.daw.tienda.domain.model.Page;
 import com.fpmislata.daw.tienda.domain.repository.ProductoRepository;
 import com.fpmislata.daw.tienda.domain.repository.entity.ProductoEntity;
 import com.fpmislata.daw.tienda.domain.service.ProductoService;
 import com.fpmislata.daw.tienda.domain.service.dto.ProductoDto;
+import com.fpmislata.daw.tienda.exception.ResourceNotFoundException;
 
 import jakarta.transaction.Transactional;
 
@@ -75,6 +75,7 @@ public class ProductoServiceImpl implements ProductoService {
     }
 
     @Override
+    @Transactional
     public void delete(long id) {
         Optional<ProductoDto> productoDto = findById(id);
 

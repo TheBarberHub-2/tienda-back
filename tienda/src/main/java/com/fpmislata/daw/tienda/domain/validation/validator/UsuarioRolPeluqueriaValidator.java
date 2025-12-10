@@ -14,6 +14,6 @@ public class UsuarioRolPeluqueriaValidator implements ConstraintValidator<ValidU
         if (peluqueriaDto == null || peluqueriaDto.usuario() == null) {
             return true; // ya lo valida @NotNull
         }
-        return peluqueriaDto.usuario().rol() == Rol.Peluqueria;
+        return Rol.Peluqueria.equals(peluqueriaDto.usuario().rol());
     }
 }

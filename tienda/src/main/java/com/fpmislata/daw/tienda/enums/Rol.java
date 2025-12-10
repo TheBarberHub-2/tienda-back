@@ -1,6 +1,7 @@
 package com.fpmislata.daw.tienda.enums;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fpmislata.daw.tienda.exception.BusinessException;
 
 public enum Rol {
     Admin,
@@ -12,7 +13,7 @@ public enum Rol {
         try {
             return Rol.valueOf(value);
         } catch (IllegalArgumentException e) {
-            throw new RuntimeException("Valor de rol no válido: " + value);
+            throw new BusinessException("Valor de rol no válido: " + value);
         }
     }
 }
