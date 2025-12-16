@@ -11,6 +11,8 @@ public interface UsuarioRepository {
 
     Optional<UsuarioEntity> findById(long id);
 
+    Optional<UsuarioEntity> findByEmail(String email);
+
     UsuarioEntity save(UsuarioEntity usuarioEntity);
 
     void deleteById(long id);

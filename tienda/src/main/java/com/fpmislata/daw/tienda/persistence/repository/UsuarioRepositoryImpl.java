@@ -47,4 +47,10 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
         usuarioJpaDao.delete(id);
     }
 
+    @Override
+    public Optional<UsuarioEntity> findByEmail(String email) {
+        return usuarioJpaDao.findByEmail(email)
+                .map(UsuarioMapper.getInstance()::fromJpaToEntity);
+    }
+
 }

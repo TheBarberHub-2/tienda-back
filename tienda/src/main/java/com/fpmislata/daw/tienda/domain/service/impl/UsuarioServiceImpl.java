@@ -9,6 +9,7 @@ import com.fpmislata.daw.tienda.domain.repository.UsuarioRepository;
 import com.fpmislata.daw.tienda.domain.repository.entity.UsuarioEntity;
 import com.fpmislata.daw.tienda.domain.service.UsuarioService;
 import com.fpmislata.daw.tienda.domain.service.dto.UsuarioDto;
+import com.fpmislata.daw.tienda.exception.BusinessException;
 import com.fpmislata.daw.tienda.exception.ResourceNotFoundException;
 
 import jakarta.transaction.Transactional;
@@ -52,6 +53,10 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     @Transactional
     public UsuarioDto create(UsuarioDto usuarioDto) {
+        if (usuarioRepository.findByEmail(usuarioDto.email()).isPresent()) {
+            throw new BusinessException("Ya existe un usuario con este correo.");
+        }
+
         UsuarioEntity usuarioEntity = UsuarioMapper.getInstance().fromModelToEntity(
                 UsuarioMapper.getInstance().fromDtoToModel(usuarioDto));
 
@@ -83,6 +88,14 @@ public class UsuarioServiceImpl implements UsuarioService {
         }
 
         usuarioRepository.deleteById(id);
+    }
+
+    @Override
+    public UsuarioDto getByEmail(String email) {
+        return usuarioRepository.findByEmail(email)
+                .map(UsuarioMapper.getInstance()::fromEntityToModel)
+                .map(UsuarioMapper.getInstance()::fromModelToDto)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
     }
 
 }

@@ -21,11 +21,14 @@ public class UsuarioJpaEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     @Column(name = "nombre", nullable = false)
     private String nombre;
+
+    @Column(name = "contrasenya", nullable = false)
+    private String contrasenya;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "rol", nullable = false)
@@ -34,10 +37,11 @@ public class UsuarioJpaEntity implements Serializable {
     public UsuarioJpaEntity() {
     }
 
-    public UsuarioJpaEntity(Long id, String email, String nombre, Rol rol) {
+    public UsuarioJpaEntity(Long id, String email, String nombre, String contrasenya, Rol rol) {
         this.id = id;
         this.email = email;
         this.nombre = nombre;
+        this.contrasenya = contrasenya;
         this.rol = rol;
     }
 
@@ -63,6 +67,14 @@ public class UsuarioJpaEntity implements Serializable {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public String getContrasenya() {
+        return contrasenya;
+    }
+
+    public void setContrasenya(String contrasenya) {
+        this.contrasenya = contrasenya;
     }
 
     public Rol getRol() {

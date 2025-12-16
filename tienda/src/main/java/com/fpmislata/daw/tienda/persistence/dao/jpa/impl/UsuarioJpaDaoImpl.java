@@ -58,4 +58,18 @@ public class UsuarioJpaDaoImpl implements UsuarioJpaDao {
         return entityManager.createQuery("SELECT COUNT(u) FROM UsuarioJpaEntity u", Long.class)
                 .getSingleResult();
     }
+
+    @Override
+    public Optional<UsuarioJpaEntity> findByEmail(String email) {
+        String sql = "SELECT u FROM UsuarioJpaEntity u WHERE u.email = :email";
+        TypedQuery<UsuarioJpaEntity> query = entityManager.createQuery(sql, UsuarioJpaEntity.class);
+        query.setParameter("email", email);
+
+        List<UsuarioJpaEntity> results = query.getResultList();
+        if (results.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(results.get(0));
+        }
+    }
 }

@@ -26,6 +26,7 @@ public class UsuarioMapper {
                 usuario.getId(),
                 usuario.getEmail(),
                 usuario.getNombre(),
+                usuario.getContrasenya(),
                 usuario.getRol());
     }
 
@@ -37,6 +38,7 @@ public class UsuarioMapper {
                 usuarioEntity.id(),
                 usuarioEntity.email(),
                 usuarioEntity.nombre(),
+                usuarioEntity.contrasenya(),
                 usuarioEntity.rol());
     }
 
@@ -48,6 +50,7 @@ public class UsuarioMapper {
                 usuarioDto.id(),
                 usuarioDto.email(),
                 usuarioDto.nombre(),
+                usuarioDto.contrasenya(),
                 usuarioDto.rol());
     }
 
@@ -59,6 +62,7 @@ public class UsuarioMapper {
                 usuario.getId(),
                 usuario.getEmail(),
                 usuario.getNombre(),
+                usuario.getContrasenya(),
                 usuario.getRol());
     }
 }

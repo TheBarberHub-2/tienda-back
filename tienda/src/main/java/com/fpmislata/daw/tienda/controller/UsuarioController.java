@@ -83,7 +83,8 @@ public class UsuarioController {
                 UsuarioDto usuarioDto = UsuarioMapper.getInstance()
                                 .fromUpdateToDto(usuarioUpdateRequest);
 
-                usuarioDto = new UsuarioDto(id, usuarioDto.email(), usuarioDto.nombre(), baseDto.rol());
+                usuarioDto = new UsuarioDto(id, usuarioDto.email(), usuarioDto.nombre(), baseDto.contrasenya(),
+                                baseDto.rol());
 
                 DtoValidator.validate(usuarioDto);
 

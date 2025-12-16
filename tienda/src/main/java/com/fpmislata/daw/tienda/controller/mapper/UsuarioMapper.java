@@ -36,6 +36,7 @@ public class UsuarioMapper {
                 null,
                 usuarioInsertRequest.email(),
                 usuarioInsertRequest.nombre(),
+                usuarioInsertRequest.contrasenya(),
                 usuarioInsertRequest.rol());
 
     }
@@ -48,6 +49,7 @@ public class UsuarioMapper {
                 null,
                 usuarioUpdateRequest.email(),
                 usuarioUpdateRequest.nombre(),
+                null,
                 null);
     }
 }

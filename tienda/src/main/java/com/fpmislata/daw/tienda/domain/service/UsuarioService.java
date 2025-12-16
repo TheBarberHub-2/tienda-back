@@ -11,6 +11,8 @@ public interface UsuarioService {
 
     UsuarioDto getById(long id);
 
+    UsuarioDto getByEmail(String email);
+
     Optional<UsuarioDto> findById(long id);
 
     UsuarioDto create(UsuarioDto usuarioDto);

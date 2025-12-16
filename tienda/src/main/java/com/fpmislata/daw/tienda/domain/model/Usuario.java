@@ -7,12 +7,14 @@ public class Usuario {
     private Long id;
     private String email;
     private String nombre;
+    private String contrasenya;
     private Rol rol;
 
-    public Usuario(Long id, String email, String nombre, Rol rol) {
+    public Usuario(Long id, String email, String nombre, String contrasenya, Rol rol) {
         this.id = id;
         this.email = email;
         this.nombre = nombre;
+        this.contrasenya = contrasenya;
         this.rol = rol;
     }
 
@@ -38,6 +40,14 @@ public class Usuario {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public String getContrasenya() {
+        return contrasenya;
+    }
+
+    public void setContrasenya(String contrasenya) {
+        this.contrasenya = contrasenya;
     }
 
     public Rol getRol() {
