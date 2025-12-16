@@ -20,7 +20,9 @@ import com.fpmislata.daw.tienda.controller.webModel.response.CategoriaDetailResp
 import com.fpmislata.daw.tienda.domain.model.Page;
 import com.fpmislata.daw.tienda.domain.service.CategoriaService;
 import com.fpmislata.daw.tienda.domain.service.dto.CategoriaDto;
+import com.fpmislata.daw.tienda.domain.validation.RequireRole;
 import com.fpmislata.daw.tienda.domain.validation.spring_validator.DtoValidator;
+import com.fpmislata.daw.tienda.enums.Rol;
 
 @RestController
 @RequestMapping("/api/categorias")
@@ -32,6 +34,7 @@ public class CategoriaController {
                 this.categoriaService = categoriaService;
         }
 
+        @RequireRole(roles = { Rol.Admin, Rol.Peluqueria, Rol.Cliente })
         @GetMapping
         public ResponseEntity<Page<CategoriaDetailResponse>> findAll(
                         @RequestParam(required = false, defaultValue = "1") int page,
@@ -51,6 +54,7 @@ public class CategoriaController {
                 return new ResponseEntity<>(responsePage, HttpStatus.OK);
         }
 
+        @RequireRole(roles = { Rol.Admin, Rol.Peluqueria, Rol.Cliente })
         @GetMapping("/{id}")
         public ResponseEntity<CategoriaDetailResponse> findById(@PathVariable Long id) {
                 CategoriaDetailResponse categoriaResponse = CategoriaMapper.getInstance()
@@ -59,6 +63,7 @@ public class CategoriaController {
                 return new ResponseEntity<>(categoriaResponse, HttpStatus.OK);
         }
 
+        @RequireRole(roles = { Rol.Admin })
         @PostMapping
         public ResponseEntity<CategoriaDetailResponse> create(@RequestBody CategoriaRequest categoriaRequest) {
                 CategoriaDto categoriaDto = CategoriaMapper.getInstance()
@@ -72,6 +77,7 @@ public class CategoriaController {
                 return new ResponseEntity<>(categoriaResponse, HttpStatus.CREATED);
         }
 
+        @RequireRole(roles = { Rol.Admin })
         @PutMapping("/{id}")
         public ResponseEntity<CategoriaDetailResponse> update(
                         @PathVariable Long id,
@@ -89,6 +95,7 @@ public class CategoriaController {
                 return new ResponseEntity<>(categoriaResponse, HttpStatus.OK);
         }
 
+        @RequireRole(roles = { Rol.Admin })
         @DeleteMapping("/{id}")
         public ResponseEntity<Void> delete(@PathVariable Long id) {
                 categoriaService.delete(id);

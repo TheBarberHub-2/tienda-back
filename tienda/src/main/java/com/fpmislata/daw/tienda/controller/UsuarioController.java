@@ -21,7 +21,9 @@ import com.fpmislata.daw.tienda.controller.webModel.response.UsuarioDetailRespon
 import com.fpmislata.daw.tienda.domain.model.Page;
 import com.fpmislata.daw.tienda.domain.service.UsuarioService;
 import com.fpmislata.daw.tienda.domain.service.dto.UsuarioDto;
+import com.fpmislata.daw.tienda.domain.validation.RequireRole;
 import com.fpmislata.daw.tienda.domain.validation.spring_validator.DtoValidator;
+import com.fpmislata.daw.tienda.enums.Rol;
 
 @RestController
 @RequestMapping("/api/usuarios")
@@ -33,6 +35,7 @@ public class UsuarioController {
                 this.usuarioService = usuarioService;
         }
 
+        @RequireRole(roles = { Rol.Admin, Rol.Peluqueria, Rol.Cliente })
         @GetMapping
         public ResponseEntity<Page<UsuarioDetailResponse>> findAll(
                         @RequestParam(required = false, defaultValue = "1") int page,
@@ -52,6 +55,7 @@ public class UsuarioController {
                 return new ResponseEntity<>(responsePage, HttpStatus.OK);
         }
 
+        @RequireRole(roles = { Rol.Admin, Rol.Peluqueria, Rol.Cliente })
         @GetMapping("/{id}")
         public ResponseEntity<UsuarioDetailResponse> findById(@PathVariable Long id) {
                 UsuarioDetailResponse usuarioResponse = UsuarioMapper.getInstance()
@@ -60,6 +64,7 @@ public class UsuarioController {
                 return new ResponseEntity<>(usuarioResponse, HttpStatus.OK);
         }
 
+        @RequireRole(roles = { Rol.Admin })
         @PostMapping
         public ResponseEntity<UsuarioDetailResponse> create(
                         @RequestBody UsuarioInsertRequest usuarioInsertRequest) {
@@ -74,6 +79,7 @@ public class UsuarioController {
                 return new ResponseEntity<>(usuarioResponse, HttpStatus.CREATED);
         }
 
+        @RequireRole(roles = { Rol.Admin })
         @PutMapping("/{id}")
         public ResponseEntity<UsuarioDetailResponse> update(
                         @PathVariable Long id,
@@ -94,6 +100,7 @@ public class UsuarioController {
                 return new ResponseEntity<>(usuarioResponse, HttpStatus.OK);
         }
 
+        @RequireRole(roles = { Rol.Admin })
         @DeleteMapping("/{id}")
         public ResponseEntity<Void> delete(@PathVariable Long id) {
                 usuarioService.delete(id);

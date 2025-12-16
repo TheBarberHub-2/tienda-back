@@ -26,7 +26,9 @@ import com.fpmislata.daw.tienda.domain.service.ProductoService;
 import com.fpmislata.daw.tienda.domain.service.dto.CategoriaDto;
 import com.fpmislata.daw.tienda.domain.service.dto.PeluqueriaDto;
 import com.fpmislata.daw.tienda.domain.service.dto.ProductoDto;
+import com.fpmislata.daw.tienda.domain.validation.RequireRole;
 import com.fpmislata.daw.tienda.domain.validation.spring_validator.DtoValidator;
+import com.fpmislata.daw.tienda.enums.Rol;
 
 @RestController
 @RequestMapping("/api/productos")
@@ -45,6 +47,7 @@ public class ProductoController {
                 this.peluqueriaService = peluqueriaService;
         }
 
+        @RequireRole(roles = { Rol.Admin, Rol.Peluqueria, Rol.Cliente })
         @GetMapping
         public ResponseEntity<Page<ProductoSummaryResponse>> findAll(
                         @RequestParam(required = false, defaultValue = "1") int page,
@@ -64,6 +67,7 @@ public class ProductoController {
                 return new ResponseEntity<>(responsePage, HttpStatus.OK);
         }
 
+        @RequireRole(roles = { Rol.Admin, Rol.Peluqueria, Rol.Cliente })
         @GetMapping("/{id}")
         public ResponseEntity<ProductoDetailResponse> findById(@PathVariable Long id) {
                 ProductoDetailResponse productoResponse = ProductoMapper.getInstance()
@@ -72,6 +76,7 @@ public class ProductoController {
                 return new ResponseEntity<>(productoResponse, HttpStatus.OK);
         }
 
+        @RequireRole(roles = { Rol.Admin })
         @PostMapping
         public ResponseEntity<ProductoDetailResponse> create(@RequestBody ProductoInsertRequest productoInsertRequest) {
                 CategoriaDto categoriaDto = categoriaService.getById(productoInsertRequest.categoriaId());
@@ -89,6 +94,7 @@ public class ProductoController {
                 return new ResponseEntity<>(productoResponse, HttpStatus.CREATED);
         }
 
+        @RequireRole(roles = { Rol.Admin })
         @PutMapping("/{id}")
         public ResponseEntity<ProductoDetailResponse> update(
                         @PathVariable Long id,
@@ -109,6 +115,7 @@ public class ProductoController {
                 return new ResponseEntity<>(productoResponse, HttpStatus.OK);
         }
 
+        @RequireRole(roles = { Rol.Admin })
         @DeleteMapping("/{id}")
         public ResponseEntity<Void> delete(@PathVariable Long id) {
                 productoService.delete(id);

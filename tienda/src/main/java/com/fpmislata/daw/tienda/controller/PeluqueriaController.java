@@ -24,7 +24,9 @@ import com.fpmislata.daw.tienda.domain.service.PeluqueriaService;
 import com.fpmislata.daw.tienda.domain.service.UsuarioService;
 import com.fpmislata.daw.tienda.domain.service.dto.PeluqueriaDto;
 import com.fpmislata.daw.tienda.domain.service.dto.UsuarioDto;
+import com.fpmislata.daw.tienda.domain.validation.RequireRole;
 import com.fpmislata.daw.tienda.domain.validation.spring_validator.DtoValidator;
+import com.fpmislata.daw.tienda.enums.Rol;
 
 @RestController
 @RequestMapping("/api/peluquerias")
@@ -39,6 +41,7 @@ public class PeluqueriaController {
                 this.usuarioService = usuarioService;
         }
 
+        @RequireRole(roles = { Rol.Admin, Rol.Peluqueria, Rol.Cliente })
         @GetMapping
         public ResponseEntity<Page<PeluqueriaSummaryResponse>> findAll(
                         @RequestParam(required = false, defaultValue = "1") int page,
@@ -58,6 +61,7 @@ public class PeluqueriaController {
                 return new ResponseEntity<>(responsePage, HttpStatus.OK);
         }
 
+        @RequireRole(roles = { Rol.Admin, Rol.Peluqueria, Rol.Cliente })
         @GetMapping("/{id}")
         public ResponseEntity<PeluqueriaDetailResponse> findById(@PathVariable Long id) {
                 PeluqueriaDetailResponse peluqueriaResponse = PeluqueriaMapper.getInstance()
@@ -66,6 +70,7 @@ public class PeluqueriaController {
                 return new ResponseEntity<>(peluqueriaResponse, HttpStatus.OK);
         }
 
+        @RequireRole(roles = { Rol.Admin })
         @PostMapping
         public ResponseEntity<PeluqueriaDetailResponse> create(
                         @RequestBody PeluqueriaInsertRequest peluqueriaInsertRequest) {
@@ -83,6 +88,7 @@ public class PeluqueriaController {
                 return new ResponseEntity<>(peluqueriaResponse, HttpStatus.CREATED);
         }
 
+        @RequireRole(roles = { Rol.Admin })
         @PutMapping("/{id}")
         public ResponseEntity<PeluqueriaDetailResponse> update(
                         @PathVariable Long id,
@@ -104,6 +110,7 @@ public class PeluqueriaController {
                 return new ResponseEntity<>(peluqueriaResponse, HttpStatus.OK);
         }
 
+        @RequireRole(roles = { Rol.Admin })
         @DeleteMapping("/{id}")
         public ResponseEntity<Void> delete(@PathVariable Long id) {
                 peluqueriaService.delete(id);

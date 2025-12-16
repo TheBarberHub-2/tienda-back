@@ -10,7 +10,7 @@ public class SesionMapper {
     private SesionMapper() {
     }
 
-    public SesionMapper getInstance() {
+    public static SesionMapper getInstance() {
         if (INSTANCE == null) {
             INSTANCE = new SesionMapper();
         }
