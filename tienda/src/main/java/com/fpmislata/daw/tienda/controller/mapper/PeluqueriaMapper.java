@@ -38,6 +38,7 @@ public class PeluqueriaMapper {
         }
 
         return new PeluqueriaDetailResponse(
+                peluqueriaDto.id(),
                 peluqueriaDto.usuario().email(),
                 peluqueriaDto.usuario().nombre(),
                 peluqueriaDto.municipio(),
@@ -51,6 +52,7 @@ public class PeluqueriaMapper {
             return null;
         }
         return new PeluqueriaSummaryResponse(
+                peluqueriaDto.id(),
                 peluqueriaDto.usuario().nombre(),
                 peluqueriaDto.municipio(),
                 peluqueriaDto.direccion(),

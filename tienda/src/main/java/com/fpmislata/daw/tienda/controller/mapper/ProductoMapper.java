@@ -27,6 +27,7 @@ public class ProductoMapper {
             return null;
         }
         return new ProductoDetailResponse(
+                productoDto.id(),
                 CategoriaMapper.getInstance().fromDtoToDetail(productoDto.categoria()),
                 PeluqueriaMapper.getInstance().fromDtoToSummary(productoDto.peluqueria()),
                 productoDto.nombre(),
@@ -39,6 +40,7 @@ public class ProductoMapper {
             return null;
         }
         return new ProductoSummaryResponse(
+                productoDto.id(),
                 productoDto.nombre(),
                 productoDto.precio(),
                 productoDto.duracion());

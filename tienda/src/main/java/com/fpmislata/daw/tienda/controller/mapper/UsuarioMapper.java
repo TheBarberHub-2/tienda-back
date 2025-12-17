@@ -23,6 +23,7 @@ public class UsuarioMapper {
             return null;
         }
         return new UsuarioDetailResponse(
+                usuarioDto.id(),
                 usuarioDto.email(),
                 usuarioDto.nombre(),
                 usuarioDto.rol());

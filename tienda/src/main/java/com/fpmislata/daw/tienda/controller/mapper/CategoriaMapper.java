@@ -23,6 +23,7 @@ public class CategoriaMapper {
             return null;
         }
         return new CategoriaDetailResponse(
+                categoriaDto.id(),
                 categoriaDto.nombre(),
                 categoriaDto.descripcion());
     }
