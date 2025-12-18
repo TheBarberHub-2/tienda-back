@@ -53,8 +53,9 @@ public class SpringConfig {
     }
 
     @Bean
-    public PeluqueriaService peluqueriaService(PeluqueriaRepository peluqueriaRepository) {
-        return new PeluqueriaServiceImpl(peluqueriaRepository);
+    public PeluqueriaService peluqueriaService(PeluqueriaRepository peluqueriaRepository,
+            UsuarioService usuarioService) {
+        return new PeluqueriaServiceImpl(peluqueriaRepository, usuarioService);
     }
 
     @Bean

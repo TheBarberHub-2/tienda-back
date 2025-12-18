@@ -8,7 +8,9 @@ import com.fpmislata.daw.tienda.domain.model.Page;
 import com.fpmislata.daw.tienda.domain.repository.PeluqueriaRepository;
 import com.fpmislata.daw.tienda.domain.repository.entity.PeluqueriaEntity;
 import com.fpmislata.daw.tienda.domain.service.PeluqueriaService;
+import com.fpmislata.daw.tienda.domain.service.UsuarioService;
 import com.fpmislata.daw.tienda.domain.service.dto.PeluqueriaDto;
+import com.fpmislata.daw.tienda.domain.service.dto.UsuarioDto;
 import com.fpmislata.daw.tienda.exception.BusinessException;
 import com.fpmislata.daw.tienda.exception.ResourceNotFoundException;
 
@@ -18,8 +20,11 @@ public class PeluqueriaServiceImpl implements PeluqueriaService {
 
     private final PeluqueriaRepository peluqueriaRepository;
 
-    public PeluqueriaServiceImpl(PeluqueriaRepository peluqueriaRepository) {
+    private final UsuarioService usuarioService;
+
+    public PeluqueriaServiceImpl(PeluqueriaRepository peluqueriaRepository, UsuarioService usuarioService) {
         this.peluqueriaRepository = peluqueriaRepository;
+        this.usuarioService = usuarioService;
     }
 
     @Override
@@ -88,6 +93,10 @@ public class PeluqueriaServiceImpl implements PeluqueriaService {
             throw new ResourceNotFoundException("Peluqueria with id " + id + " not found");
         }
 
+        UsuarioDto usuarioDto = peluqueriaDto.get().usuario();
+
         peluqueriaRepository.deleteById(id);
+
+        usuarioService.delete(usuarioDto.id());
     }
 }
