@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 public record ProductoSummaryResponse(
                 Long id,
+                String peluqueria,
                 String nombre,
                 BigDecimal precio,
                 int duracion) {
