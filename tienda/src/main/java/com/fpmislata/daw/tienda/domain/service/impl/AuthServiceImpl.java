@@ -8,6 +8,7 @@ import com.fpmislata.daw.tienda.domain.service.SesionService;
 import com.fpmislata.daw.tienda.domain.service.UsuarioService;
 import com.fpmislata.daw.tienda.domain.service.dto.SesionDto;
 import com.fpmislata.daw.tienda.domain.service.dto.UsuarioDto;
+import com.fpmislata.daw.tienda.enums.Rol;
 import com.fpmislata.daw.tienda.exception.BusinessException;
 
 public class AuthServiceImpl implements AuthService {
@@ -47,5 +48,12 @@ public class AuthServiceImpl implements AuthService {
         SesionDto sesion = sesionService.getByToken(token);
         UsuarioDto usuario = sesion.usuario();
         return usuario;
+    }
+
+    @Override
+    public Rol getRolByToken(String token) {
+        UsuarioDto usuario = this.getByToken(token);
+        Rol rol = usuario.rol();
+        return rol;
     }
 }
