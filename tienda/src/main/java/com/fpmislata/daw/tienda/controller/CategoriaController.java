@@ -38,7 +38,7 @@ public class CategoriaController {
         @GetMapping
         public ResponseEntity<Page<CategoriaDetailResponse>> findAll(
                         @RequestParam(required = false, defaultValue = "1") int page,
-                        @RequestParam(required = false, defaultValue = "10") int size) {
+                        @RequestParam(required = false, defaultValue = "100") int size) {
                 Page<CategoriaDto> categoriaPage = categoriaService.findAll(page, size);
 
                 List<CategoriaDetailResponse> categoriaResponses = categoriaPage.data().stream()

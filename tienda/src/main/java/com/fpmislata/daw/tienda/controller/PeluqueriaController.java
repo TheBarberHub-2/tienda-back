@@ -45,7 +45,7 @@ public class PeluqueriaController {
         @GetMapping
         public ResponseEntity<Page<PeluqueriaSummaryResponse>> findAll(
                         @RequestParam(required = false, defaultValue = "1") int page,
-                        @RequestParam(required = false, defaultValue = "10") int size) {
+                        @RequestParam(required = false, defaultValue = "100") int size) {
                 Page<PeluqueriaDto> peluqueriaPage = peluqueriaService.findAll(page, size);
 
                 List<PeluqueriaSummaryResponse> peluqueriaResponses = peluqueriaPage.data().stream()

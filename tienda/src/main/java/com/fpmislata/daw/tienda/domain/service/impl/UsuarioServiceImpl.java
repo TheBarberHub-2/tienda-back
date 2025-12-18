@@ -38,6 +38,18 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
+    public List<UsuarioDto> getAll() {
+        Page<UsuarioEntity> usuarioPage = usuarioRepository.findAll(1, 10);
+
+        List<UsuarioDto> usuarioDtos = usuarioPage.data().stream()
+                .map(UsuarioMapper.getInstance()::fromEntityToModel)
+                .map(UsuarioMapper.getInstance()::fromModelToDto)
+                .toList();
+
+        return usuarioDtos;
+    }
+
+    @Override
     public UsuarioDto getById(long id) {
         return usuarioRepository.findById(id).map(UsuarioMapper.getInstance()::fromEntityToModel)
                 .map(UsuarioMapper.getInstance()::fromModelToDto)

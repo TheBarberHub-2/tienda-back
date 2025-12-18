@@ -1,5 +1,6 @@
 package com.fpmislata.daw.tienda.controller;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import com.fpmislata.daw.tienda.controller.webModel.request.UsuarioInsertRequest
 import com.fpmislata.daw.tienda.controller.webModel.request.UsuarioUpdateRequest;
 import com.fpmislata.daw.tienda.controller.webModel.response.UsuarioDetailResponse;
 import com.fpmislata.daw.tienda.domain.model.Page;
+import com.fpmislata.daw.tienda.domain.service.PeluqueriaService;
 import com.fpmislata.daw.tienda.domain.service.UsuarioService;
 import com.fpmislata.daw.tienda.domain.service.dto.UsuarioDto;
 import com.fpmislata.daw.tienda.domain.validation.RequireRole;
@@ -31,15 +33,18 @@ public class UsuarioController {
 
         private final UsuarioService usuarioService;
 
-        public UsuarioController(UsuarioService usuarioService) {
+        private final PeluqueriaService peluqueriaService;
+
+        public UsuarioController(UsuarioService usuarioService, PeluqueriaService peluqueriaService) {
                 this.usuarioService = usuarioService;
+                this.peluqueriaService = peluqueriaService;
         }
 
         @RequireRole(roles = { Rol.Admin, Rol.Peluqueria, Rol.Cliente })
         @GetMapping
         public ResponseEntity<Page<UsuarioDetailResponse>> findAll(
                         @RequestParam(required = false, defaultValue = "1") int page,
-                        @RequestParam(required = false, defaultValue = "10") int size) {
+                        @RequestParam(required = false, defaultValue = "100") int size) {
                 Page<UsuarioDto> usuarioPage = usuarioService.findAll(page, size);
 
                 List<UsuarioDetailResponse> usuarioResponses = usuarioPage.data().stream()
@@ -62,6 +67,18 @@ public class UsuarioController {
                                 .fromDtoToDetail(usuarioService.getById(id));
 
                 return new ResponseEntity<>(usuarioResponse, HttpStatus.OK);
+        }
+
+        @RequireRole(roles = { Rol.Admin })
+        @GetMapping("/available")
+        public ResponseEntity<List<UsuarioDetailResponse>> findAvailable() {
+                List<UsuarioDetailResponse> usuarios = peluqueriaService.findAvailablePeluquerias()
+                                .orElse(Collections.emptyList())
+                                .stream().map(UsuarioMapper.getInstance()::fromDtoToDetail)
+                                .toList();
+
+                return new ResponseEntity<>(usuarios, HttpStatus.OK);
+
         }
 
         @RequireRole(roles = { Rol.Admin })

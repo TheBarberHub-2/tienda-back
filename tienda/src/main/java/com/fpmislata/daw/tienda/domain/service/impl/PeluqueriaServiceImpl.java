@@ -1,7 +1,9 @@
 package com.fpmislata.daw.tienda.domain.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.fpmislata.daw.tienda.domain.mapper.PeluqueriaMapper;
 import com.fpmislata.daw.tienda.domain.model.Page;
@@ -11,6 +13,7 @@ import com.fpmislata.daw.tienda.domain.service.PeluqueriaService;
 import com.fpmislata.daw.tienda.domain.service.UsuarioService;
 import com.fpmislata.daw.tienda.domain.service.dto.PeluqueriaDto;
 import com.fpmislata.daw.tienda.domain.service.dto.UsuarioDto;
+import com.fpmislata.daw.tienda.enums.Rol;
 import com.fpmislata.daw.tienda.exception.BusinessException;
 import com.fpmislata.daw.tienda.exception.ResourceNotFoundException;
 
@@ -48,6 +51,27 @@ public class PeluqueriaServiceImpl implements PeluqueriaService {
         return peluqueriaRepository.findById(id).map(PeluqueriaMapper.getInstance()::fromEntityToModel)
                 .map(PeluqueriaMapper.getInstance()::fromModelToDto)
                 .orElseThrow(() -> new ResourceNotFoundException("Peluqueria with id " + id + " not found"));
+    }
+
+    @Override
+    public Optional<List<UsuarioDto>> findAvailablePeluquerias() {
+        List<UsuarioDto> usuarios = new ArrayList<>(usuarioService.getAll());
+
+        usuarios = usuarios.stream()
+                .filter(u -> u.rol().equals(Rol.Peluqueria))
+                .collect(Collectors.toList());
+
+        List<Long> idsOcupados = this.getAll().stream()
+                .map(p -> p.usuario().id())
+                .toList();
+
+        usuarios = usuarios.stream()
+                .filter(u -> !idsOcupados.contains(u.id()))
+                .collect(Collectors.toList());
+
+        return usuarios.isEmpty()
+                ? Optional.empty()
+                : Optional.of(usuarios);
     }
 
     @Override
@@ -98,5 +122,17 @@ public class PeluqueriaServiceImpl implements PeluqueriaService {
         peluqueriaRepository.deleteById(id);
 
         usuarioService.delete(usuarioDto.id());
+    }
+
+    @Override
+    public List<PeluqueriaDto> getAll() {
+        Page<PeluqueriaEntity> peluqueriaPage = peluqueriaRepository.findAll(1, 10);
+
+        List<PeluqueriaDto> peluqueriaDtos = peluqueriaPage.data().stream()
+                .map(PeluqueriaMapper.getInstance()::fromEntityToModel)
+                .map(PeluqueriaMapper.getInstance()::fromModelToDto)
+                .toList();
+
+        return peluqueriaDtos;
     }
 }
