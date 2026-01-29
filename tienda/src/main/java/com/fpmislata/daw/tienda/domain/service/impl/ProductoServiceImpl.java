@@ -11,8 +11,6 @@ import com.fpmislata.daw.tienda.domain.service.ProductoService;
 import com.fpmislata.daw.tienda.domain.service.dto.ProductoDto;
 import com.fpmislata.daw.tienda.exception.ResourceNotFoundException;
 
-import jakarta.transaction.Transactional;
-
 public class ProductoServiceImpl implements ProductoService {
 
     private final ProductoRepository productoRepository;
@@ -51,7 +49,6 @@ public class ProductoServiceImpl implements ProductoService {
     }
 
     @Override
-    @Transactional
     public ProductoDto create(ProductoDto productoDto) {
         ProductoEntity productoEntity = ProductoMapper.getInstance().fromModelToEntity(
                 ProductoMapper.getInstance().fromDtoToModel(productoDto));
@@ -61,7 +58,6 @@ public class ProductoServiceImpl implements ProductoService {
     }
 
     @Override
-    @Transactional
     public ProductoDto update(ProductoDto productoDto) {
         productoRepository.findById(productoDto.id())
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -75,7 +71,6 @@ public class ProductoServiceImpl implements ProductoService {
     }
 
     @Override
-    @Transactional
     public void delete(long id) {
         Optional<ProductoDto> productoDto = findById(id);
 

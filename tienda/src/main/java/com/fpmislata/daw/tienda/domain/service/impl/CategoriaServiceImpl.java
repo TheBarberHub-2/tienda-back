@@ -11,8 +11,6 @@ import com.fpmislata.daw.tienda.domain.service.CategoriaService;
 import com.fpmislata.daw.tienda.domain.service.dto.CategoriaDto;
 import com.fpmislata.daw.tienda.exception.ResourceNotFoundException;
 
-import jakarta.transaction.Transactional;
-
 public class CategoriaServiceImpl implements CategoriaService {
 
     private final CategoriaRepository categoriaRepository;
@@ -51,7 +49,6 @@ public class CategoriaServiceImpl implements CategoriaService {
     }
 
     @Override
-    @Transactional
     public CategoriaDto create(CategoriaDto categoriaDto) {
         CategoriaEntity categoriaEntity = CategoriaMapper.getInstance().fromModelToEntity(
                 CategoriaMapper.getInstance().fromDtoToModel(categoriaDto));
@@ -61,7 +58,6 @@ public class CategoriaServiceImpl implements CategoriaService {
     }
 
     @Override
-    @Transactional
     public CategoriaDto update(CategoriaDto categoriaDto) {
         categoriaRepository.findById(categoriaDto.id())
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -75,7 +71,6 @@ public class CategoriaServiceImpl implements CategoriaService {
     }
 
     @Override
-    @Transactional
     public void delete(long id) {
         Optional<CategoriaDto> categoriaDto = findById(id);
 

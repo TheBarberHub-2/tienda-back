@@ -1,32 +1,33 @@
 package com.fpmislata.daw.tienda.domain.mapper;
 
 import com.fpmislata.daw.tienda.domain.model.Peluqueria;
-import com.fpmislata.daw.tienda.domain.model.Producto;
+import com.fpmislata.daw.tienda.domain.model.PeluqueriaHorario;
 import com.fpmislata.daw.tienda.domain.repository.entity.PeluqueriaEntity;
-import com.fpmislata.daw.tienda.domain.repository.entity.ProductoEntity;
+import com.fpmislata.daw.tienda.domain.repository.entity.PeluqueriaHorarioEntity;
 import com.fpmislata.daw.tienda.domain.service.dto.PeluqueriaDto;
-import com.fpmislata.daw.tienda.domain.service.dto.ProductoDto;
+import com.fpmislata.daw.tienda.domain.service.dto.PeluqueriaHorarioDto;
+import com.fpmislata.daw.tienda.enums.DiaSemana;
 
-public class ProductoMapper {
+public class PeluqueriaHorarioMapper {
 
-    private static ProductoMapper INSTANCE;
+    private static PeluqueriaHorarioMapper INSTANCE;
 
-    private ProductoMapper() {
+    private PeluqueriaHorarioMapper() {
     }
 
-    public static ProductoMapper getInstance() {
+    public static PeluqueriaHorarioMapper getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = new ProductoMapper();
+            INSTANCE = new PeluqueriaHorarioMapper();
         }
         return INSTANCE;
     }
 
-    public ProductoEntity fromModelToEntity(Producto producto) {
-        if (producto == null) {
+    public PeluqueriaHorarioEntity fromModelToEntity(PeluqueriaHorario peluqueriaHorario) {
+        if (peluqueriaHorario == null) {
             return null;
         }
 
-        Peluqueria peluqueria = producto.getPeluqueria();
+        Peluqueria peluqueria = peluqueriaHorario.getPeluqueria();
         PeluqueriaEntity peluqueriaEntity = null;
         if (peluqueria != null) {
             peluqueriaEntity = new PeluqueriaEntity(
@@ -39,21 +40,20 @@ public class ProductoMapper {
                     null);
         }
 
-        return new ProductoEntity(
-                producto.getId(),
-                CategoriaMapper.getInstance().fromModelToEntity(producto.getCategoria()),
+        return new PeluqueriaHorarioEntity(
+                peluqueriaHorario.getId(),
                 peluqueriaEntity,
-                producto.getNombre(),
-                producto.getPrecio(),
-                producto.getDuracion());
+                peluqueriaHorario.getDiaSemana().getValue(),
+                peluqueriaHorario.getHoraApertura(),
+                peluqueriaHorario.getHoraCierre());
     }
 
-    public Producto fromEntityToModel(ProductoEntity productoEntity) {
-        if (productoEntity == null) {
+    public PeluqueriaHorario fromEntityToModel(PeluqueriaHorarioEntity peluqueriaHorarioEntity) {
+        if (peluqueriaHorarioEntity == null) {
             return null;
         }
 
-        PeluqueriaEntity peluqueriaEntity = productoEntity.peluqueria();
+        PeluqueriaEntity peluqueriaEntity = peluqueriaHorarioEntity.peluqueria();
         Peluqueria peluqueria = null;
         if (peluqueriaEntity != null) {
             peluqueria = new Peluqueria(
@@ -66,21 +66,20 @@ public class ProductoMapper {
                     null);
         }
 
-        return new Producto(
-                productoEntity.id(),
-                CategoriaMapper.getInstance().fromEntityToModel(productoEntity.categoria()),
+        return new PeluqueriaHorario(
+                peluqueriaHorarioEntity.id(),
                 peluqueria,
-                productoEntity.nombre(),
-                productoEntity.precio(),
-                productoEntity.duracion());
+                DiaSemana.fromValue(peluqueriaHorarioEntity.diaSemana()),
+                peluqueriaHorarioEntity.horaApertura(),
+                peluqueriaHorarioEntity.horaCierre());
     }
 
-    public Producto fromDtoToModel(ProductoDto productoDto) {
-        if (productoDto == null) {
+    public PeluqueriaHorario fromDtoToModel(PeluqueriaHorarioDto peluqueriaHorarioDto) {
+        if (peluqueriaHorarioDto == null) {
             return null;
         }
 
-        PeluqueriaDto peluqueriaDto = productoDto.peluqueria();
+        PeluqueriaDto peluqueriaDto = peluqueriaHorarioDto.peluqueria();
         Peluqueria peluqueria = null;
         if (peluqueriaDto != null) {
             peluqueria = new Peluqueria(
@@ -93,22 +92,22 @@ public class ProductoMapper {
                     null);
         }
 
-        return new Producto(
-                productoDto.id(),
-                CategoriaMapper.getInstance().fromDtoToModel(productoDto.categoria()),
+        return new PeluqueriaHorario(
+                peluqueriaHorarioDto.id(),
                 peluqueria,
-                productoDto.nombre(),
-                productoDto.precio(),
-                productoDto.duracion());
+                peluqueriaHorarioDto.diaSemana(),
+                peluqueriaHorarioDto.horaApertura(),
+                peluqueriaHorarioDto.horaCierre());
     }
 
-    public ProductoDto fromModelToDto(Producto producto) {
-        if (producto == null) {
+    public PeluqueriaHorarioDto fromModelToDto(PeluqueriaHorario peluqueriaHorario) {
+        if (peluqueriaHorario == null) {
             return null;
         }
 
-        Peluqueria peluqueria = producto.getPeluqueria();
+        Peluqueria peluqueria = peluqueriaHorario.getPeluqueria();
         PeluqueriaDto peluqueriaDto = null;
+
         if (peluqueria != null) {
             peluqueriaDto = new PeluqueriaDto(
                     peluqueria.getId(),
@@ -116,16 +115,15 @@ public class ProductoMapper {
                     peluqueria.getMunicipio(),
                     peluqueria.getDireccion(),
                     peluqueria.getTelefono(),
-                    null, // lista de productos vacía,
+                    null,
                     null);
         }
 
-        return new ProductoDto(
-                producto.getId(),
-                CategoriaMapper.getInstance().fromModelToDto(producto.getCategoria()),
+        return new PeluqueriaHorarioDto(
+                peluqueriaHorario.getId(),
                 peluqueriaDto,
-                producto.getNombre(),
-                producto.getPrecio(),
-                producto.getDuracion());
+                peluqueriaHorario.getDiaSemana(),
+                peluqueriaHorario.getHoraApertura(),
+                peluqueriaHorario.getHoraCierre());
     }
 }

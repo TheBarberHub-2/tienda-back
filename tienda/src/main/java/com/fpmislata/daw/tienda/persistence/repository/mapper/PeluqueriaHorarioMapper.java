@@ -1,30 +1,30 @@
 package com.fpmislata.daw.tienda.persistence.repository.mapper;
 
 import com.fpmislata.daw.tienda.domain.repository.entity.PeluqueriaEntity;
-import com.fpmislata.daw.tienda.domain.repository.entity.ProductoEntity;
+import com.fpmislata.daw.tienda.domain.repository.entity.PeluqueriaHorarioEntity;
+import com.fpmislata.daw.tienda.persistence.dao.jpa.entity.PeluqueriaHorarioJpaEntity;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.entity.PeluqueriaJpaEntity;
-import com.fpmislata.daw.tienda.persistence.dao.jpa.entity.ProductoJpaEntity;
 
-public class ProductoMapper {
+public class PeluqueriaHorarioMapper {
 
-    private static ProductoMapper INSTANCE;
+    private static PeluqueriaHorarioMapper INSTANCE;
 
-    private ProductoMapper() {
+    private PeluqueriaHorarioMapper() {
     }
 
-    public static ProductoMapper getInstance() {
+    public static PeluqueriaHorarioMapper getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = new ProductoMapper();
+            INSTANCE = new PeluqueriaHorarioMapper();
         }
         return INSTANCE;
     }
 
-    public ProductoJpaEntity fromEntityToJpa(ProductoEntity productoEntity) {
-        if (productoEntity == null) {
+    public PeluqueriaHorarioJpaEntity fromEntityToJpa(PeluqueriaHorarioEntity peluqueriaHorarioEntity) {
+        if (peluqueriaHorarioEntity == null) {
             return null;
         }
 
-        PeluqueriaEntity peluqueriaEntity = productoEntity.peluqueria();
+        PeluqueriaEntity peluqueriaEntity = peluqueriaHorarioEntity.peluqueria();
         PeluqueriaJpaEntity peluqueriaJpa = null;
         if (peluqueriaEntity != null) {
             peluqueriaJpa = new PeluqueriaJpaEntity(
@@ -37,21 +37,20 @@ public class ProductoMapper {
                     null);
         }
 
-        return new ProductoJpaEntity(
-                productoEntity.id(),
-                CategoriaMapper.getInstance().fromEntityToJpa(productoEntity.categoria()),
+        return new PeluqueriaHorarioJpaEntity(
+                peluqueriaHorarioEntity.id(),
                 peluqueriaJpa,
-                productoEntity.nombre(),
-                productoEntity.precio(),
-                productoEntity.duracion());
+                peluqueriaHorarioEntity.diaSemana(),
+                peluqueriaHorarioEntity.horaApertura(),
+                peluqueriaHorarioEntity.horaCierre());
     }
 
-    public ProductoEntity fromJpaToEntity(ProductoJpaEntity productoJpaEntity) {
-        if (productoJpaEntity == null) {
+    public PeluqueriaHorarioEntity fromJpaToEntity(PeluqueriaHorarioJpaEntity peluqueriaHorarioJpaEntity) {
+        if (peluqueriaHorarioJpaEntity == null) {
             return null;
         }
 
-        PeluqueriaJpaEntity peluqueriaJpa = productoJpaEntity.getPeluqueria();
+        PeluqueriaJpaEntity peluqueriaJpa = peluqueriaHorarioJpaEntity.getPeluqueria();
         PeluqueriaEntity peluqueriaEntity = null;
         if (peluqueriaJpa != null) {
             peluqueriaEntity = new PeluqueriaEntity(
@@ -64,12 +63,11 @@ public class ProductoMapper {
                     null);
         }
 
-        return new ProductoEntity(
-                productoJpaEntity.getId(),
-                CategoriaMapper.getInstance().fromJpaToEntity(productoJpaEntity.getCategoria()),
+        return new PeluqueriaHorarioEntity(
+                peluqueriaHorarioJpaEntity.getId(),
                 peluqueriaEntity,
-                productoJpaEntity.getNombre(),
-                productoJpaEntity.getPrecio(),
-                productoJpaEntity.getDuracion());
+                peluqueriaHorarioJpaEntity.getDiaSemana(),
+                peluqueriaHorarioJpaEntity.getHoraApertura(),
+                peluqueriaHorarioJpaEntity.getHoraCierre());
     }
 }

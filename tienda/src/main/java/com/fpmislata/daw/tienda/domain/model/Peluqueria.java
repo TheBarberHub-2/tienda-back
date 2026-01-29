@@ -13,15 +13,17 @@ public class Peluqueria {
     private String direccion;
     private String telefono;
     private List<Producto> productos;
+    private List<PeluqueriaHorario> horarios;
 
     public Peluqueria(Long id, Usuario usuario, String municipio, String direccion, String telefono,
-            List<Producto> productos) {
+            List<Producto> productos, List<PeluqueriaHorario> horarios) {
         this.id = id;
         this.usuario = usuario;
         this.municipio = municipio;
         this.direccion = direccion;
         this.telefono = telefono;
         this.productos = (productos == null) ? new ArrayList<>() : new ArrayList<>(productos);
+        this.horarios = (horarios == null) ? new ArrayList<>() : new ArrayList<>(horarios);
     }
 
     public Long getId() {
@@ -77,5 +79,13 @@ public class Peluqueria {
             throw new BusinessException("El producto ya existe en la peluquería");
         }
         this.productos.add(producto);
+    }
+
+    public List<PeluqueriaHorario> getHorarios() {
+        return horarios;
+    }
+
+    public void setHorarios(List<PeluqueriaHorario> horarios) {
+        this.horarios = horarios;
     }
 }

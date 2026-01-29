@@ -6,6 +6,7 @@ import java.util.List;
 import com.fpmislata.daw.tienda.controller.webModel.request.PeluqueriaInsertRequest;
 import com.fpmislata.daw.tienda.controller.webModel.request.PeluqueriaUpdateRequest;
 import com.fpmislata.daw.tienda.controller.webModel.response.PeluqueriaDetailResponse;
+import com.fpmislata.daw.tienda.controller.webModel.response.PeluqueriaHorarioResponse;
 import com.fpmislata.daw.tienda.controller.webModel.response.PeluqueriaSummaryResponse;
 import com.fpmislata.daw.tienda.controller.webModel.response.ProductoSummaryResponse;
 import com.fpmislata.daw.tienda.domain.service.dto.PeluqueriaDto;
@@ -37,6 +38,13 @@ public class PeluqueriaMapper {
                     .toList();
         }
 
+        List<PeluqueriaHorarioResponse> horarios = new ArrayList<>();
+        if (peluqueriaDto.horarios() != null && !peluqueriaDto.horarios().isEmpty()) {
+            horarios = peluqueriaDto.horarios().stream()
+                    .map(PeluqueriaHorarioMapper.getInstance()::fromDtoToResponse)
+                    .toList();
+        }
+
         return new PeluqueriaDetailResponse(
                 peluqueriaDto.id(),
                 peluqueriaDto.usuario().email(),
@@ -44,7 +52,8 @@ public class PeluqueriaMapper {
                 peluqueriaDto.municipio(),
                 peluqueriaDto.direccion(),
                 peluqueriaDto.telefono(),
-                productos);
+                productos,
+                horarios);
     }
 
     public PeluqueriaSummaryResponse fromDtoToSummary(PeluqueriaDto peluqueriaDto) {
@@ -69,6 +78,7 @@ public class PeluqueriaMapper {
                 peluqueriaInsertRequest.municipio(),
                 peluqueriaInsertRequest.direccion(),
                 peluqueriaInsertRequest.telefono(),
+                null,
                 null);
     }
 
@@ -82,6 +92,7 @@ public class PeluqueriaMapper {
                 peluqueriaUpdateRequest.municipio(),
                 peluqueriaUpdateRequest.direccion(),
                 peluqueriaUpdateRequest.telefono(),
+                null,
                 null);
     }
 }

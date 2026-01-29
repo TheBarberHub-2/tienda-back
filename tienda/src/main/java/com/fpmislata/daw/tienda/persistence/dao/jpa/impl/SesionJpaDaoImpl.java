@@ -9,6 +9,7 @@ import com.fpmislata.daw.tienda.persistence.dao.jpa.entity.SesionJpaEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Transactional;
 
 public class SesionJpaDaoImpl implements SesionJpaDao {
 
@@ -30,12 +31,14 @@ public class SesionJpaDaoImpl implements SesionJpaDao {
     }
 
     @Override
+    @Transactional
     public SesionJpaEntity insert(SesionJpaEntity entity) {
         entityManager.persist(entity);
         return entity;
     }
 
     @Override
+    @Transactional
     public void deleteByToken(String token) {
         String sql = "DELETE FROM SesionJpaEntity s WHERE s.token = :token";
         entityManager.createQuery(sql)

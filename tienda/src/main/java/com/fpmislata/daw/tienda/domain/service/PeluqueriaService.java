@@ -24,4 +24,6 @@ public interface PeluqueriaService {
     PeluqueriaDto update(PeluqueriaDto peluqueriaDto);
 
     void delete(long id);
+
+    PeluqueriaDto findByUsuario(long usuarioId);
 }

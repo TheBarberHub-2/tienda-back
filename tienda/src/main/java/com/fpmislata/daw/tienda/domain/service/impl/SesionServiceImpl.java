@@ -7,8 +7,6 @@ import com.fpmislata.daw.tienda.domain.service.SesionService;
 import com.fpmislata.daw.tienda.domain.service.dto.SesionDto;
 import com.fpmislata.daw.tienda.exception.ResourceNotFoundException;
 
-import jakarta.transaction.Transactional;
-
 public class SesionServiceImpl implements SesionService {
     private final SesionRepository sesionRepository;
 
@@ -24,7 +22,6 @@ public class SesionServiceImpl implements SesionService {
     }
 
     @Override
-    @Transactional
     public SesionDto create(SesionDto sesionDto) {
 
         SesionEntity sesionEntity = SesionMapper.getInstance()
@@ -36,7 +33,6 @@ public class SesionServiceImpl implements SesionService {
     }
 
     @Override
-    @Transactional
     public void deleteByToken(String token) {
         sesionRepository.deleteByToken(token);
     }

@@ -12,8 +12,6 @@ import com.fpmislata.daw.tienda.domain.service.dto.UsuarioDto;
 import com.fpmislata.daw.tienda.exception.BusinessException;
 import com.fpmislata.daw.tienda.exception.ResourceNotFoundException;
 
-import jakarta.transaction.Transactional;
-
 public class UsuarioServiceImpl implements UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
@@ -63,7 +61,6 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    @Transactional
     public UsuarioDto create(UsuarioDto usuarioDto) {
         if (usuarioRepository.findByEmail(usuarioDto.email()).isPresent()) {
             throw new BusinessException("Ya existe un usuario con este correo.");
@@ -77,7 +74,6 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    @Transactional
     public UsuarioDto update(UsuarioDto usuarioDto) {
         usuarioRepository.findById(usuarioDto.id())
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -91,7 +87,6 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    @Transactional
     public void delete(long id) {
         Optional<UsuarioDto> usuarioDto = findById(id);
 

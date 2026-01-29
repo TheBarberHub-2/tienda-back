@@ -100,7 +100,7 @@ public class PeluqueriaController {
 
                 peluqueriaDto = new PeluqueriaDto(id, baseDto.usuario(), peluqueriaDto.municipio(),
                                 peluqueriaDto.direccion(),
-                                peluqueriaDto.telefono(), baseDto.productos());
+                                peluqueriaDto.telefono(), baseDto.productos(), baseDto.horarios());
 
                 DtoValidator.validate(peluqueriaDto);
 
