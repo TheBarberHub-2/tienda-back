@@ -14,9 +14,14 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:4200")
-                        .allowedMethods("GET", "POST", "PUT", "DELETE")
-                        .allowedHeaders("*");
+                        .allowedOrigins(
+                                "http://localhost:4200",
+                                "http://greatbank.producciondaw.cip.fpmislata.com",
+                                "http://thebarberhub.producciondaw.cip.fpmislata.com",
+                                "http://thebarberhub-client.producciondaw.cip.fpmislata.com")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedHeaders("*")
+                        .allowCredentials(true);
             }
         };
     }
