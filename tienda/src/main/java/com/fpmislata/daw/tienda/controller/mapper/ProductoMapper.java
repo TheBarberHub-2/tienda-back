@@ -42,6 +42,7 @@ public class ProductoMapper {
         return new ProductoSummaryResponse(
                 productoDto.id(),
                 productoDto.peluqueria().usuario().nombre(),
+                productoDto.categoria().nombre(),
                 productoDto.nombre(),
                 productoDto.precio(),
                 productoDto.duracion());
