@@ -9,6 +9,7 @@ import com.fpmislata.daw.tienda.domain.repository.UsuarioRepository;
 import com.fpmislata.daw.tienda.domain.repository.entity.UsuarioEntity;
 import com.fpmislata.daw.tienda.domain.service.UsuarioService;
 import com.fpmislata.daw.tienda.domain.service.dto.UsuarioDto;
+import com.fpmislata.daw.tienda.enums.Rol;
 import com.fpmislata.daw.tienda.exception.BusinessException;
 import com.fpmislata.daw.tienda.exception.ResourceNotFoundException;
 
@@ -103,6 +104,24 @@ public class UsuarioServiceImpl implements UsuarioService {
                 .map(UsuarioMapper.getInstance()::fromEntityToModel)
                 .map(UsuarioMapper.getInstance()::fromModelToDto)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
+    }
+
+    @Override
+    public UsuarioDto updateRol(long usuarioId, Rol rol) {
+        UsuarioEntity usuarioEntity = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario with id " + usuarioId + " not found"));
+
+        usuarioEntity = new UsuarioEntity(
+                usuarioEntity.id(),
+                usuarioEntity.email(),
+                usuarioEntity.nombre(),
+                usuarioEntity.contrasenya(),
+                rol);
+
+        UsuarioEntity updatedEntity = usuarioRepository.save(usuarioEntity);
+
+        return UsuarioMapper.getInstance().fromModelToDto(
+                UsuarioMapper.getInstance().fromEntityToModel(updatedEntity));
     }
 
 }
