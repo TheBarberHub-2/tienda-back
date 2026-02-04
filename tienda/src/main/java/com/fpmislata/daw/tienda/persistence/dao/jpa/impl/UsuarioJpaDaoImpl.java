@@ -10,6 +10,7 @@ import com.fpmislata.daw.tienda.persistence.dao.jpa.entity.UsuarioJpaEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Transactional;
 
 public class UsuarioJpaDaoImpl implements UsuarioJpaDao {
 
@@ -33,12 +34,14 @@ public class UsuarioJpaDaoImpl implements UsuarioJpaDao {
     }
 
     @Override
+    @Transactional
     public UsuarioJpaEntity insert(UsuarioJpaEntity entity) {
         entityManager.persist(entity);
         return entity;
     }
 
     @Override
+    @Transactional
     public UsuarioJpaEntity update(UsuarioJpaEntity entity) {
         UsuarioJpaEntity managed = entityManager.find(UsuarioJpaEntity.class, entity.getId());
         if (managed == null) {
@@ -49,6 +52,7 @@ public class UsuarioJpaDaoImpl implements UsuarioJpaDao {
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         entityManager.remove(entityManager.find(UsuarioJpaEntity.class, id));
     }

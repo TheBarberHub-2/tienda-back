@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fpmislata.daw.tienda.domain.repository.entity.PeluqueriaEntity;
+import com.fpmislata.daw.tienda.domain.repository.entity.PeluqueriaHorarioEntity;
 import com.fpmislata.daw.tienda.domain.repository.entity.ProductoEntity;
+import com.fpmislata.daw.tienda.persistence.dao.jpa.entity.PeluqueriaHorarioJpaEntity;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.entity.PeluqueriaJpaEntity;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.entity.ProductoJpaEntity;
 
@@ -32,13 +34,20 @@ public class PeluqueriaMapper {
                     .map(ProductoMapper.getInstance()::fromEntityToJpa)
                     .toList();
         }
+        List<PeluqueriaHorarioJpaEntity> horarios = new ArrayList<>();
+        if (peluqueriaEntity.horarios() != null && !peluqueriaEntity.horarios().isEmpty()) {
+            horarios = peluqueriaEntity.horarios().stream()
+                    .map(PeluqueriaHorarioMapper.getInstance()::fromEntityToJpa)
+                    .toList();
+        }
         return new PeluqueriaJpaEntity(
                 peluqueriaEntity.id(),
                 UsuarioMapper.getInstance().fromEntityToJpa(peluqueriaEntity.usuario()),
                 peluqueriaEntity.municipio(),
                 peluqueriaEntity.direccion(),
                 peluqueriaEntity.telefono(),
-                productos);
+                productos,
+                horarios);
     }
 
     public PeluqueriaEntity fromJpaToEntity(PeluqueriaJpaEntity peluqueriaJpaEntity) {
@@ -51,12 +60,19 @@ public class PeluqueriaMapper {
                     .map(ProductoMapper.getInstance()::fromJpaToEntity)
                     .toList();
         }
+        List<PeluqueriaHorarioEntity> horarios = new ArrayList<>();
+        if (peluqueriaJpaEntity.getHorarios() != null && !peluqueriaJpaEntity.getHorarios().isEmpty()) {
+            horarios = peluqueriaJpaEntity.getHorarios().stream()
+                    .map(PeluqueriaHorarioMapper.getInstance()::fromJpaToEntity)
+                    .toList();
+        }
         return new PeluqueriaEntity(
                 peluqueriaJpaEntity.getId(),
                 UsuarioMapper.getInstance().fromJpaToEntity(peluqueriaJpaEntity.getUsuario()),
                 peluqueriaJpaEntity.getMunicipio(),
                 peluqueriaJpaEntity.getDireccion(),
                 peluqueriaJpaEntity.getTelefono(),
-                productos);
+                productos,
+                horarios);
     }
 }

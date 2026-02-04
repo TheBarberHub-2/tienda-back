@@ -39,17 +39,21 @@ public class PeluqueriaJpaEntity implements Serializable {
     @OneToMany(mappedBy = "peluqueria", cascade = CascadeType.ALL)
     private List<ProductoJpaEntity> productos = new ArrayList<>();
 
+    @OneToMany(mappedBy = "peluqueria", cascade = CascadeType.ALL)
+    private List<PeluqueriaHorarioJpaEntity> horarios = new ArrayList<>();
+
     public PeluqueriaJpaEntity() {
     }
 
     public PeluqueriaJpaEntity(Long id, UsuarioJpaEntity usuario, String municipio, String direccion,
-            String telefono, List<ProductoJpaEntity> productos) {
+            String telefono, List<ProductoJpaEntity> productos, List<PeluqueriaHorarioJpaEntity> horarios) {
         this.id = id;
         this.usuario = usuario;
         this.municipio = municipio;
         this.direccion = direccion;
         this.telefono = telefono;
         this.productos = productos;
+        this.horarios = horarios;
     }
 
     public Long getId() {
@@ -98,5 +102,13 @@ public class PeluqueriaJpaEntity implements Serializable {
 
     public void setProductos(List<ProductoJpaEntity> productos) {
         this.productos = productos;
+    }
+
+    public List<PeluqueriaHorarioJpaEntity> getHorarios() {
+        return horarios;
+    }
+
+    public void setHorarios(List<PeluqueriaHorarioJpaEntity> horarios) {
+        this.horarios = horarios;
     }
 }

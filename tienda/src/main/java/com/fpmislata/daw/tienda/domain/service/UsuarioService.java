@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.fpmislata.daw.tienda.domain.model.Page;
 import com.fpmislata.daw.tienda.domain.service.dto.UsuarioDto;
+import com.fpmislata.daw.tienda.enums.Rol;
 
 public interface UsuarioService {
 
@@ -23,4 +24,6 @@ public interface UsuarioService {
     UsuarioDto update(UsuarioDto usuarioDto);
 
     void delete(long id);
+
+    UsuarioDto updateRol(long usuarioId, Rol rol);
 }

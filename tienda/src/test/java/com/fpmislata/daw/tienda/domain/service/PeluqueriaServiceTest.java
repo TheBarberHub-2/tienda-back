@@ -64,6 +64,7 @@ class PeluqueriaServiceTest {
                 "Valencia",
                 "Calle Falsa 123",
                 "+34961111222",
+                null,
                 null);
     }
 
@@ -74,6 +75,7 @@ class PeluqueriaServiceTest {
                 "Valencia",
                 "Calle Falsa 123",
                 "+34961111222",
+                null,
                 null);
     }
 

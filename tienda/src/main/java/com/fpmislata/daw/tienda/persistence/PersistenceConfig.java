@@ -5,14 +5,22 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.fpmislata.daw.tienda.persistence.dao.jpa.CategoriaJpaDao;
+import com.fpmislata.daw.tienda.persistence.dao.jpa.PeluqueriaHorarioJpaDao;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.PeluqueriaJpaDao;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.ProductoJpaDao;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.SesionJpaDao;
+import com.fpmislata.daw.tienda.persistence.dao.jpa.SolicitudJpaDao;
+import com.fpmislata.daw.tienda.persistence.dao.jpa.SolicitudPeluqueriaJpaDao;
+import com.fpmislata.daw.tienda.persistence.dao.jpa.SolicitudProductoJpaDao;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.UsuarioJpaDao;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.impl.CategoriaJpaDaoImpl;
+import com.fpmislata.daw.tienda.persistence.dao.jpa.impl.PeluqueriaHorarioJpaDaoImpl;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.impl.PeluqueriaJpaDaoImpl;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.impl.ProductoJpaDaoImpl;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.impl.SesionJpaDaoImpl;
+import com.fpmislata.daw.tienda.persistence.dao.jpa.impl.SolicitudJpaDaoImpl;
+import com.fpmislata.daw.tienda.persistence.dao.jpa.impl.SolicitudPeluqueriaJpaDaoImpl;
+import com.fpmislata.daw.tienda.persistence.dao.jpa.impl.SolicitudProductoJpaDaoImpl;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.impl.UsuarioJpaDaoImpl;
 
 @Configuration
@@ -42,5 +50,25 @@ public class PersistenceConfig {
     @Bean
     public SesionJpaDao sesionJpaDao() {
         return new SesionJpaDaoImpl();
+    }
+
+    @Bean
+    public PeluqueriaHorarioJpaDao peluqueriaHorarioJpaDao() {
+        return new PeluqueriaHorarioJpaDaoImpl();
+    }
+
+    @Bean
+    public SolicitudJpaDao solicitudJpaDao() {
+        return new SolicitudJpaDaoImpl();
+    }
+
+    @Bean
+    public SolicitudPeluqueriaJpaDao solicitudPeluqueriaJpaDao() {
+        return new SolicitudPeluqueriaJpaDaoImpl();
+    }
+
+    @Bean
+    public SolicitudProductoJpaDao solicitudProductoJpaDao() {
+        return new SolicitudProductoJpaDaoImpl();
     }
 }

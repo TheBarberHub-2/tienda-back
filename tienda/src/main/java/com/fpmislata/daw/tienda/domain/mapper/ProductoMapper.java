@@ -35,6 +35,7 @@ public class ProductoMapper {
                     peluqueria.getMunicipio(),
                     peluqueria.getDireccion(),
                     peluqueria.getTelefono(),
+                    null,
                     null);
         }
 
@@ -61,6 +62,7 @@ public class ProductoMapper {
                     peluqueriaEntity.municipio(),
                     peluqueriaEntity.direccion(),
                     peluqueriaEntity.telefono(),
+                    null,
                     null);
         }
 
@@ -87,6 +89,7 @@ public class ProductoMapper {
                     peluqueriaDto.municipio(),
                     peluqueriaDto.direccion(),
                     peluqueriaDto.telefono(),
+                    null,
                     null);
         }
 
@@ -113,8 +116,8 @@ public class ProductoMapper {
                     peluqueria.getMunicipio(),
                     peluqueria.getDireccion(),
                     peluqueria.getTelefono(),
-                    null // lista de productos vacía
-            );
+                    null, // lista de productos vacía,
+                    null);
         }
 
         return new ProductoDto(

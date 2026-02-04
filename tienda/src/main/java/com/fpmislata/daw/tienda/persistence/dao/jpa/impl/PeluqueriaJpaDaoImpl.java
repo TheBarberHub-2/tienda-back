@@ -10,6 +10,7 @@ import com.fpmislata.daw.tienda.persistence.dao.jpa.entity.PeluqueriaJpaEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Transactional;
 
 public class PeluqueriaJpaDaoImpl implements PeluqueriaJpaDao {
 
@@ -33,12 +34,14 @@ public class PeluqueriaJpaDaoImpl implements PeluqueriaJpaDao {
     }
 
     @Override
+    @Transactional
     public PeluqueriaJpaEntity insert(PeluqueriaJpaEntity entity) {
         entityManager.persist(entity);
         return entity;
     }
 
     @Override
+    @Transactional
     public PeluqueriaJpaEntity update(PeluqueriaJpaEntity entity) {
         PeluqueriaJpaEntity managed = entityManager.find(PeluqueriaJpaEntity.class, entity.getId());
         if (managed == null) {
@@ -49,6 +52,7 @@ public class PeluqueriaJpaDaoImpl implements PeluqueriaJpaDao {
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         entityManager.remove(entityManager.find(PeluqueriaJpaEntity.class, id));
     }

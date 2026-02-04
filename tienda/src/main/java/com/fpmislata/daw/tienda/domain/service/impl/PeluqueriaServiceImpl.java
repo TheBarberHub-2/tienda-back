@@ -17,8 +17,6 @@ import com.fpmislata.daw.tienda.enums.Rol;
 import com.fpmislata.daw.tienda.exception.BusinessException;
 import com.fpmislata.daw.tienda.exception.ResourceNotFoundException;
 
-import jakarta.transaction.Transactional;
-
 public class PeluqueriaServiceImpl implements PeluqueriaService {
 
         private final PeluqueriaRepository peluqueriaRepository;
@@ -82,7 +80,6 @@ public class PeluqueriaServiceImpl implements PeluqueriaService {
         }
 
         @Override
-        @Transactional
         public PeluqueriaDto create(PeluqueriaDto peluqueriaDto) {
                 if (peluqueriaRepository.findByUsuario(peluqueriaDto.usuario().id()).isPresent()) {
                         throw new BusinessException("Ya existe una peluquería con este usuario.");
@@ -97,7 +94,6 @@ public class PeluqueriaServiceImpl implements PeluqueriaService {
         }
 
         @Override
-        @Transactional
         public PeluqueriaDto update(PeluqueriaDto peluqueriaDto) {
                 peluqueriaRepository.findById(peluqueriaDto.id())
                                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -112,7 +108,6 @@ public class PeluqueriaServiceImpl implements PeluqueriaService {
         }
 
         @Override
-        @Transactional
         public void delete(long id) {
                 Optional<PeluqueriaDto> peluqueriaDto = findById(id);
 
@@ -140,15 +135,10 @@ public class PeluqueriaServiceImpl implements PeluqueriaService {
         }
 
         @Override
-        public PeluqueriaDto findByEmail(String email) {
-                UsuarioDto usuarioDto = usuarioService.getByEmail(email);
-
-                PeluqueriaDto peluqueriaDto = peluqueriaRepository.findByUsuario(usuarioDto.id())
-                                .map(PeluqueriaMapper.getInstance()::fromEntityToModel)
-                                .map(PeluqueriaMapper.getInstance()::fromModelToDto)
-                                .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Peluqueria with email " + email + " not found"));
-
-                return peluqueriaDto;
+        public PeluqueriaDto findByUsuario(long usuarioId) {
+                return PeluqueriaMapper.getInstance().fromModelToDto(PeluqueriaMapper
+                                .getInstance()
+                                .fromEntityToModel(peluqueriaRepository.findByUsuario(usuarioId).orElseThrow(
+                                                () -> new ResourceNotFoundException("Peluqueria no encontrada"))));
         }
 }

@@ -9,6 +9,7 @@ import com.fpmislata.daw.tienda.persistence.dao.jpa.entity.ProductoJpaEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Transactional;
 
 public class ProductoJpaDaoImpl implements ProductoJpaDao {
 
@@ -32,12 +33,14 @@ public class ProductoJpaDaoImpl implements ProductoJpaDao {
     }
 
     @Override
+    @Transactional
     public ProductoJpaEntity insert(ProductoJpaEntity entity) {
         entityManager.persist(entity);
         return entity;
     }
 
     @Override
+    @Transactional
     public ProductoJpaEntity update(ProductoJpaEntity entity) {
         ProductoJpaEntity managed = entityManager.find(ProductoJpaEntity.class, entity.getId());
         if (managed == null) {
@@ -48,6 +51,7 @@ public class ProductoJpaDaoImpl implements ProductoJpaDao {
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         entityManager.remove(entityManager.find(ProductoJpaEntity.class, id));
     }

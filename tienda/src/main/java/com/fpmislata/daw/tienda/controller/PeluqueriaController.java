@@ -100,7 +100,7 @@ public class PeluqueriaController {
 
                 peluqueriaDto = new PeluqueriaDto(id, baseDto.usuario(), peluqueriaDto.municipio(),
                                 peluqueriaDto.direccion(),
-                                peluqueriaDto.telefono(), baseDto.productos());
+                                peluqueriaDto.telefono(), baseDto.productos(), baseDto.horarios());
 
                 DtoValidator.validate(peluqueriaDto);
 
@@ -115,14 +115,5 @@ public class PeluqueriaController {
         public ResponseEntity<Void> delete(@PathVariable Long id) {
                 peluqueriaService.delete(id);
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-        @RequireRole(roles = { Rol.Peluqueria })
-        @GetMapping("/by-email")
-        public ResponseEntity<PeluqueriaDetailResponse> getByEmail(String email) {
-                PeluqueriaDto peluqueriaDto = peluqueriaService.findByEmail(email);
-                PeluqueriaDetailResponse peluqueriaResponse = PeluqueriaMapper.getInstance()
-                                .fromDtoToDetail(peluqueriaDto);
-                return new ResponseEntity<>(peluqueriaResponse, HttpStatus.OK);
         }
 }

@@ -33,6 +33,7 @@ public class ProductoMapper {
                     peluqueriaEntity.municipio(),
                     peluqueriaEntity.direccion(),
                     peluqueriaEntity.telefono(),
+                    null,
                     null);
         }
 
@@ -59,6 +60,7 @@ public class ProductoMapper {
                     peluqueriaJpa.getMunicipio(),
                     peluqueriaJpa.getDireccion(),
                     peluqueriaJpa.getTelefono(),
+                    null,
                     null);
         }
 
