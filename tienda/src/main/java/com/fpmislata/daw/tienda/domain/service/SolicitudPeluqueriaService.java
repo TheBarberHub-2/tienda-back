@@ -4,5 +4,5 @@ import com.fpmislata.daw.tienda.domain.service.dto.SolicitudPeluqueriaDto;
 
 public interface SolicitudPeluqueriaService {
 
-    SolicitudPeluqueriaDto crearSolicitudAltaPeluqueria(SolicitudPeluqueriaDto solicitudPeluqueriaDto);
+    SolicitudPeluqueriaDto crearSolicitudAltaPeluqueria(String token, SolicitudPeluqueriaDto solicitudPeluqueriaDto);
 }

@@ -27,4 +27,10 @@ public class SolicitudProductoRepositoryImpl implements SolicitudProductoReposit
         return SolicitudProductoMapper.getInstance()
                 .fromJpaToEntity(solicitudProductoJpaDao.insert(jpa));
     }
+
+    @Override
+    public Optional<SolicitudProductoEntity> findBySolicitud(long solicitudId) {
+        return solicitudProductoJpaDao.findBySolicitud(solicitudId)
+                .map(SolicitudProductoMapper.getInstance()::fromJpaToEntity);
+    }
 }

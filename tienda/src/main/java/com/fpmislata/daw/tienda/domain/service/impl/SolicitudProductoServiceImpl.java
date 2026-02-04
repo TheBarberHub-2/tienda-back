@@ -2,15 +2,17 @@ package com.fpmislata.daw.tienda.domain.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import com.fpmislata.daw.tienda.domain.mapper.SolicitudMapper;
 import com.fpmislata.daw.tienda.domain.mapper.SolicitudProductoMapper;
+import com.fpmislata.daw.tienda.domain.repository.SolicitudProductoRepository;
 import com.fpmislata.daw.tienda.domain.repository.SolicitudRepository;
 import com.fpmislata.daw.tienda.domain.repository.entity.SolicitudEntity;
 import com.fpmislata.daw.tienda.domain.repository.entity.SolicitudProductoEntity;
+import com.fpmislata.daw.tienda.domain.service.AuthService;
 import com.fpmislata.daw.tienda.domain.service.CategoriaService;
 import com.fpmislata.daw.tienda.domain.service.SolicitudProductoService;
-import com.fpmislata.daw.tienda.domain.service.UsuarioService;
 import com.fpmislata.daw.tienda.domain.service.dto.SolicitudDto;
 import com.fpmislata.daw.tienda.domain.service.dto.SolicitudProductoDto;
 import com.fpmislata.daw.tienda.domain.service.dto.UsuarioDto;
@@ -21,23 +23,24 @@ import com.fpmislata.daw.tienda.exception.BusinessException;
 
 public class SolicitudProductoServiceImpl implements SolicitudProductoService {
 
+        private final SolicitudProductoRepository solicitudProductoRepository;
         private final SolicitudRepository solicitudRepository;
-        private final UsuarioService usuarioService;
+        private final AuthService authService;
         private final CategoriaService categoriaService;
 
-        public SolicitudProductoServiceImpl(SolicitudRepository solicitudRepository, UsuarioService usuarioService,
+        public SolicitudProductoServiceImpl(SolicitudProductoRepository solicitudProductoRepository,
+                        SolicitudRepository solicitudRepository, AuthService authService,
                         CategoriaService categoriaService) {
+                this.solicitudProductoRepository = solicitudProductoRepository;
                 this.solicitudRepository = solicitudRepository;
-                this.usuarioService = usuarioService;
+                this.authService = authService;
                 this.categoriaService = categoriaService;
         }
 
         @Override
-        public SolicitudProductoDto crearSolicitudProducto(SolicitudProductoDto dto) {
+        public SolicitudProductoDto crearSolicitudProducto(String token, SolicitudProductoDto dto) {
 
-                long usuarioId = dto.solicitud().usuario().id();
-
-                UsuarioDto usuario = usuarioService.getById(usuarioId);
+                UsuarioDto usuario = authService.getByToken(token);
                 if (!usuario.rol().equals(Rol.Peluqueria)) {
                         throw new BusinessException("Solo las peluquerías pueden solicitar la creación de productos.");
                 }
@@ -45,16 +48,17 @@ public class SolicitudProductoServiceImpl implements SolicitudProductoService {
                 categoriaService.findById(dto.categoria().id())
                                 .orElseThrow(() -> new BusinessException("La categoría indicada no existe."));
 
-                List<SolicitudDto> solicitudesUsuario = solicitudRepository.findByUsuario(usuarioId)
+                List<SolicitudDto> solicitudesUsuario = solicitudRepository.findById(usuario.id())
                                 .stream()
                                 .map(SolicitudMapper.getInstance()::fromEntityToModel)
                                 .map(SolicitudMapper.getInstance()::fromModelToDto)
                                 .toList();
 
                 boolean existeSolicitudMismoProducto = solicitudesUsuario.stream()
-                                .filter(s -> s.tipo().equals(TipoSolicitud.Producto)
-                                                && s.estado().equals(EstadoSolicitud.Pendiente))
-                                .flatMap(s -> s.solicitudesProducto().stream())
+                                .filter(s -> s.tipo().equals(TipoSolicitud.Producto))
+                                .map(s -> solicitudProductoRepository.findBySolicitud(s.id()))
+                                .filter(Optional::isPresent)
+                                .map(Optional::get)
                                 .anyMatch(sp -> sp.nombre().equalsIgnoreCase(dto.nombre()));
 
                 if (existeSolicitudMismoProducto) {
@@ -67,9 +71,7 @@ public class SolicitudProductoServiceImpl implements SolicitudProductoService {
                                 usuario,
                                 TipoSolicitud.Producto,
                                 EstadoSolicitud.Pendiente,
-                                LocalDateTime.now(),
-                                null,
-                                null);
+                                LocalDateTime.now());
 
                 SolicitudEntity solicitudEntity = solicitudRepository.save(SolicitudMapper.getInstance()
                                 .fromModelToEntity(SolicitudMapper.getInstance().fromDtoToModel(solicitudDto)));
@@ -84,9 +86,10 @@ public class SolicitudProductoServiceImpl implements SolicitudProductoService {
                                 dto.precio(),
                                 dto.duracion());
 
-                SolicitudProductoEntity solicitudProductoEntity = SolicitudProductoMapper.getInstance()
-                                .fromModelToEntity(SolicitudProductoMapper.getInstance()
-                                                .fromDtoToModel(solicitudProductoDto));
+                SolicitudProductoEntity solicitudProductoEntity = solicitudProductoRepository
+                                .save(SolicitudProductoMapper.getInstance()
+                                                .fromModelToEntity(SolicitudProductoMapper.getInstance()
+                                                                .fromDtoToModel(solicitudProductoDto)));
 
                 return SolicitudProductoMapper.getInstance()
                                 .fromModelToDto(SolicitudProductoMapper.getInstance()

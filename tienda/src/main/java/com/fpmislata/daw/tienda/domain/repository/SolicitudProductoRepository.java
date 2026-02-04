@@ -8,5 +8,7 @@ public interface SolicitudProductoRepository {
 
     Optional<SolicitudProductoEntity> findById(long id);
 
+    Optional<SolicitudProductoEntity> findBySolicitud(long solicitudId);
+
     SolicitudProductoEntity save(SolicitudProductoEntity solicitudProducto);
 }

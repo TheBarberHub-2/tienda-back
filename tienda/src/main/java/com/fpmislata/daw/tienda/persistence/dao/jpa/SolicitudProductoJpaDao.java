@@ -8,5 +8,7 @@ public interface SolicitudProductoJpaDao {
 
     Optional<SolicitudProductoJpaEntity> findById(long id);
 
+    Optional<SolicitudProductoJpaEntity> findBySolicitud(long solicitudId);
+
     SolicitudProductoJpaEntity insert(SolicitudProductoJpaEntity entity);
 }

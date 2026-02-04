@@ -144,25 +144,26 @@ public class SpringConfig {
             SolicitudProductoRepository solicitudProductoRepository,
             SolicitudPeluqueriaRepository solicitudPeluqueriaRepository,
             PeluqueriaService peluqueriaService,
-            ProductoService productoService, UsuarioService usuarioService) {
+            ProductoService productoService, UsuarioService usuarioService, AuthService authService) {
         return new SolicitudServiceImpl(solicitudRepository, solicitudProductoRepository,
-                solicitudPeluqueriaRepository, peluqueriaService, productoService, usuarioService);
+                solicitudPeluqueriaRepository, peluqueriaService, productoService, usuarioService, authService);
     }
 
     @Bean
     public SolicitudPeluqueriaService solicitudPeluqueriaService(
             SolicitudRepository solicitudRepository,
-            SolicitudPeluqueriaRepository solicitudPeluqueriaRepository, UsuarioService usuarioService) {
+            SolicitudPeluqueriaRepository solicitudPeluqueriaRepository, AuthService authService) {
         return new SolicitudPeluqueriaServiceImpl(solicitudRepository, solicitudPeluqueriaRepository,
-                usuarioService);
+                authService);
     }
 
     @Bean
     public SolicitudProductoService solicitudProductoService(
+            SolicitudProductoRepository solicitudProductoRepository,
             SolicitudRepository solicitudRepository,
-            UsuarioService usuarioService,
+            AuthService authService,
             CategoriaService categoriaService) {
-        return new SolicitudProductoServiceImpl(solicitudRepository,
-                usuarioService, categoriaService);
+        return new SolicitudProductoServiceImpl(solicitudProductoRepository, solicitudRepository,
+                authService, categoriaService);
     }
 }

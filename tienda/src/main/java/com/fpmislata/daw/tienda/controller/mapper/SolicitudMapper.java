@@ -1,8 +1,5 @@
 package com.fpmislata.daw.tienda.controller.mapper;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fpmislata.daw.tienda.controller.webModel.request.SolicitudPeluqueriaRequest;
 import com.fpmislata.daw.tienda.controller.webModel.request.SolicitudProductoRequest;
 import com.fpmislata.daw.tienda.controller.webModel.response.SolicitudDetailResponse;
@@ -58,27 +55,11 @@ public class SolicitudMapper {
             return null;
         }
 
-        List<SolicitudPeluqueriaDetailResponse> peluquerias = new ArrayList<>();
-        if (solicitudDto.solicitudesPeluqueria() != null && !solicitudDto.solicitudesPeluqueria().isEmpty()) {
-            peluquerias = solicitudDto.solicitudesPeluqueria().stream()
-                    .map(this::fromPeluqueriaToResponse)
-                    .toList();
-        }
-
-        List<SolicitudProductoDetailResponse> productos = new ArrayList<>();
-        if (solicitudDto.solicitudesProducto() != null && !solicitudDto.solicitudesProducto().isEmpty()) {
-            productos = solicitudDto.solicitudesProducto().stream()
-                    .map(this::fromProductoToResponse)
-                    .toList();
-        }
-
         return new SolicitudDetailResponse(
                 solicitudDto.id(),
                 UsuarioMapper.getInstance().fromDtoToDetail(solicitudDto.usuario()),
                 solicitudDto.tipo(),
-                solicitudDto.estado(),
-                peluquerias,
-                productos);
+                solicitudDto.estado());
     }
 
     public SolicitudPeluqueriaDto fromRequestToPeluqueria(SolicitudPeluqueriaRequest solicitudPeluqueriaRequest) {

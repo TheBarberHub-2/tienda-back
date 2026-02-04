@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.fpmislata.daw.tienda.enums.EstadoSolicitud;
 import com.fpmislata.daw.tienda.enums.TipoSolicitud;
+import com.fpmislata.daw.tienda.exception.ResourceNotFoundException;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.SolicitudJpaDao;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.entity.SolicitudJpaEntity;
 
@@ -31,7 +32,13 @@ public class SolicitudJpaDaoImpl implements SolicitudJpaDao {
     }
 
     @Override
+    @Transactional
     public SolicitudJpaEntity update(SolicitudJpaEntity entity) {
+        SolicitudJpaEntity managed = entityManager.find(SolicitudJpaEntity.class, entity.getId());
+        if (managed == null) {
+            throw new ResourceNotFoundException("Solicitud no encontrada");
+        }
+        entityManager.flush();
         return entityManager.merge(entity);
     }
 

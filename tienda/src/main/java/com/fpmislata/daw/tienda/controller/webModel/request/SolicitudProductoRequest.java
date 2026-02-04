@@ -3,12 +3,12 @@ package com.fpmislata.daw.tienda.controller.webModel.request;
 import java.math.BigDecimal;
 
 public record SolicitudProductoRequest(
-                long categoriaId,
+        long categoriaId,
 
-                String nombre,
+        String nombre,
 
-                BigDecimal precio,
+        BigDecimal precio,
 
-                Integer duracion) {
+        Integer duracion) {
 
 }

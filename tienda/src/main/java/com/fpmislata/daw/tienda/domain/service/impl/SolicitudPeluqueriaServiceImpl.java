@@ -9,8 +9,8 @@ import com.fpmislata.daw.tienda.domain.repository.SolicitudPeluqueriaRepository;
 import com.fpmislata.daw.tienda.domain.repository.SolicitudRepository;
 import com.fpmislata.daw.tienda.domain.repository.entity.SolicitudEntity;
 import com.fpmislata.daw.tienda.domain.repository.entity.SolicitudPeluqueriaEntity;
+import com.fpmislata.daw.tienda.domain.service.AuthService;
 import com.fpmislata.daw.tienda.domain.service.SolicitudPeluqueriaService;
-import com.fpmislata.daw.tienda.domain.service.UsuarioService;
 import com.fpmislata.daw.tienda.domain.service.dto.SolicitudDto;
 import com.fpmislata.daw.tienda.domain.service.dto.SolicitudPeluqueriaDto;
 import com.fpmislata.daw.tienda.domain.service.dto.UsuarioDto;
@@ -23,19 +23,20 @@ public class SolicitudPeluqueriaServiceImpl implements SolicitudPeluqueriaServic
 
         private final SolicitudRepository solicitudRepository;
         private final SolicitudPeluqueriaRepository solicitudPeluqueriaRepository;
-        private final UsuarioService usuarioService;
+        private final AuthService authService;
 
         public SolicitudPeluqueriaServiceImpl(SolicitudRepository solicitudRepository,
-                        SolicitudPeluqueriaRepository solicitudPeluqueriaRepository, UsuarioService usuarioService) {
+                        SolicitudPeluqueriaRepository solicitudPeluqueriaRepository,
+                        AuthService authService) {
                 this.solicitudRepository = solicitudRepository;
                 this.solicitudPeluqueriaRepository = solicitudPeluqueriaRepository;
-                this.usuarioService = usuarioService;
+                this.authService = authService;
         }
 
         @Override
-        public SolicitudPeluqueriaDto crearSolicitudAltaPeluqueria(SolicitudPeluqueriaDto dto) {
+        public SolicitudPeluqueriaDto crearSolicitudAltaPeluqueria(String token, SolicitudPeluqueriaDto dto) {
 
-                UsuarioDto usuario = usuarioService.getById(dto.solicitud().usuario().id());
+                UsuarioDto usuario = authService.getByToken(token);
                 if (!usuario.rol().equals(Rol.Cliente)) {
                         throw new BusinessException(
                                         "Solo los Usuarios con rol Cliente pueden solicitar ser Peluquería.");
@@ -62,9 +63,7 @@ public class SolicitudPeluqueriaServiceImpl implements SolicitudPeluqueriaServic
                                 usuario,
                                 TipoSolicitud.Peluqueria,
                                 EstadoSolicitud.Pendiente,
-                                LocalDateTime.now(),
-                                null,
-                                null);
+                                LocalDateTime.now());
 
                 SolicitudEntity solicitudEntity = solicitudRepository.save(SolicitudMapper.getInstance()
                                 .fromModelToEntity(SolicitudMapper.getInstance().fromDtoToModel(solicitudDto)));

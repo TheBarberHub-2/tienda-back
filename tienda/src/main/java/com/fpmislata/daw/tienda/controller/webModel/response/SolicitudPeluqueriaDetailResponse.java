@@ -1,14 +1,14 @@
 package com.fpmislata.daw.tienda.controller.webModel.response;
 
 public record SolicitudPeluqueriaDetailResponse(
-                Long id,
+        Long id,
 
-                SolicitudDetailResponse solicitud,
+        SolicitudDetailResponse solicitud,
 
-                String municipio,
+        String municipio,
 
-                String direccion,
+        String direccion,
 
-                String telefono) {
+        String telefono) {
 
 }

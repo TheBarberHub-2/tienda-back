@@ -3,14 +3,14 @@ package com.fpmislata.daw.tienda.controller.webModel.response;
 import java.math.BigDecimal;
 
 public record SolicitudProductoDetailResponse(
-                Long id,
+        Long id,
 
-                SolicitudDetailResponse solicitud,
+        SolicitudDetailResponse solicitud,
 
-                String nombre,
+        String nombre,
 
-                BigDecimal precio,
+        BigDecimal precio,
 
-                Integer duracion) {
+        Integer duracion) {
 
 }
