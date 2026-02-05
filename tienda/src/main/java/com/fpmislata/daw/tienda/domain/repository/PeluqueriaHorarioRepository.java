@@ -13,5 +13,7 @@ public interface PeluqueriaHorarioRepository {
 
     List<PeluqueriaHorarioEntity> findByPeluqueria(long peluqueriaId);
 
+    List<PeluqueriaHorarioEntity> findByPeluqueriaAndDia(long peluqueriaId, int diaSemana);
+
     void deleteById(long id);
 }

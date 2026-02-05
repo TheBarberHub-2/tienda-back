@@ -74,4 +74,15 @@ public class PeluqueriaHorarioJpaDaoImpl implements PeluqueriaHorarioJpaDao {
                 .getResultList();
     }
 
+    @Override
+    public List<PeluqueriaHorarioJpaEntity> findByPeluqueriaAndDiaSemana(long peluqueriaId, int diaSemana) {
+        String sql = "SELECT p FROM PeluqueriaHorarioJpaEntity p WHERE p.peluqueria.id = :peluqueriaId AND p.diaSemana = :diaSemana ORDER BY p.horaApertura";
+
+        TypedQuery<PeluqueriaHorarioJpaEntity> query = entityManager.createQuery(sql, PeluqueriaHorarioJpaEntity.class)
+                .setParameter("peluqueriaId", peluqueriaId)
+                .setParameter("diaSemana", diaSemana);
+
+        return query.getResultList();
+    }
+
 }

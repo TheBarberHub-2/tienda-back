@@ -8,6 +8,7 @@ import com.fpmislata.daw.tienda.domain.repository.CategoriaRepository;
 import com.fpmislata.daw.tienda.domain.repository.PeluqueriaHorarioRepository;
 import com.fpmislata.daw.tienda.domain.repository.PeluqueriaRepository;
 import com.fpmislata.daw.tienda.domain.repository.ProductoRepository;
+import com.fpmislata.daw.tienda.domain.repository.ReservaRepository;
 import com.fpmislata.daw.tienda.domain.repository.SesionRepository;
 import com.fpmislata.daw.tienda.domain.repository.SolicitudPeluqueriaRepository;
 import com.fpmislata.daw.tienda.domain.repository.SolicitudProductoRepository;
@@ -40,6 +41,7 @@ import com.fpmislata.daw.tienda.persistence.dao.jpa.CategoriaJpaDao;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.PeluqueriaHorarioJpaDao;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.PeluqueriaJpaDao;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.ProductoJpaDao;
+import com.fpmislata.daw.tienda.persistence.dao.jpa.ReservaJpaDao;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.SesionJpaDao;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.SolicitudJpaDao;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.SolicitudPeluqueriaJpaDao;
@@ -49,6 +51,7 @@ import com.fpmislata.daw.tienda.persistence.repository.CategoriaRepositoryImpl;
 import com.fpmislata.daw.tienda.persistence.repository.PeluqueriaHorarioRepositoryImpl;
 import com.fpmislata.daw.tienda.persistence.repository.PeluqueriaRepositoryImpl;
 import com.fpmislata.daw.tienda.persistence.repository.ProductoRepositoryImpl;
+import com.fpmislata.daw.tienda.persistence.repository.ReservaRepositoryImpl;
 import com.fpmislata.daw.tienda.persistence.repository.SesionRepositoryImpl;
 import com.fpmislata.daw.tienda.persistence.repository.SolicitudPeluqueriaRepositoryImpl;
 import com.fpmislata.daw.tienda.persistence.repository.SolicitudProductoRepositoryImpl;
@@ -170,7 +173,14 @@ public class SpringConfig {
     }
 
     @Bean
-    public CarritoService carritoService(ProductoRepository productoRepository, PeluqueriaService peluqueriaService) {
-        return new CarritoServiceImpl(productoRepository, peluqueriaService);
+    public ReservaRepository reservaRepository(ReservaJpaDao reservaJpaDao) {
+        return new ReservaRepositoryImpl(reservaJpaDao);
+    }
+
+    @Bean
+    public CarritoService carritoService(ProductoRepository productoRepository, PeluqueriaService peluqueriaService,
+            PeluqueriaHorarioRepository peluqueriaHorarioRepository, ReservaRepository reservaRepository) {
+        return new CarritoServiceImpl(productoRepository, peluqueriaService, peluqueriaHorarioRepository,
+                reservaRepository);
     }
 }
