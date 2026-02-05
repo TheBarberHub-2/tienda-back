@@ -85,4 +85,13 @@ public class SolicitudPeluqueriaServiceImpl implements SolicitudPeluqueriaServic
                                 SolicitudPeluqueriaMapper.getInstance().fromEntityToModel(solicitudPeluqueriaEntity));
         }
 
+        @Override
+        public SolicitudPeluqueriaDto getById(long id) {
+                SolicitudPeluqueriaEntity entity = solicitudPeluqueriaRepository.findById(id)
+                                .orElseThrow(() -> new BusinessException("No se encontró la solicitud de peluquería."));
+
+                return SolicitudPeluqueriaMapper.getInstance().fromModelToDto(
+                                SolicitudPeluqueriaMapper.getInstance().fromEntityToModel(entity));
+        }
+
 }
