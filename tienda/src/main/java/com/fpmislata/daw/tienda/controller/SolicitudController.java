@@ -1,6 +1,7 @@
 package com.fpmislata.daw.tienda.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,7 @@ import com.fpmislata.daw.tienda.domain.service.dto.CategoriaDto;
 import com.fpmislata.daw.tienda.domain.service.dto.SolicitudDto;
 import com.fpmislata.daw.tienda.domain.validation.RequireRole;
 import com.fpmislata.daw.tienda.enums.Rol;
+import com.fpmislata.daw.tienda.enums.TipoSolicitud;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -54,12 +56,33 @@ public class SolicitudController {
 
         @RequireRole(roles = { Rol.Admin })
         @GetMapping("/pendientes")
-        public ResponseEntity<List<SolicitudDetailResponse>> getSolicitudesPendientes() {
+        public ResponseEntity<Map<String, Object>> getSolicitudesPendientes() {
                 List<SolicitudDto> solicitudes = solicitudService.getSolicitudesPendientes();
 
-                List<SolicitudDetailResponse> response = solicitudes.stream()
-                                .map(SolicitudMapper.getInstance()::fromSolicitudToDetail)
+                List<Long> idsPeluqueria = solicitudes.stream()
+                                .filter(s -> s.tipo() == TipoSolicitud.Peluqueria)
+                                .map(SolicitudDto::id)
                                 .toList();
+
+                List<Long> idsProducto = solicitudes.stream()
+                                .filter(s -> s.tipo() == TipoSolicitud.Producto)
+                                .map(SolicitudDto::id)
+                                .toList();
+
+                List<SolicitudPeluqueriaDetailResponse> peluquerias = idsPeluqueria.stream()
+                                .map(id -> solicitudPeluqueriaService.getById(id))
+                                .map(SolicitudMapper.getInstance()::fromPeluqueriaToResponse)
+                                .toList();
+
+                List<SolicitudProductoDetailResponse> productos = idsProducto.stream()
+                                .map(id -> solicitudProductoService.getById(id))
+                                .map(SolicitudMapper.getInstance()::fromProductoToResponse)
+                                .toList();
+
+                Map<String, Object> response = Map.of(
+                                "peluquerias", peluquerias,
+                                "productos", productos);
+
                 return new ResponseEntity<>(response, HttpStatus.OK);
         }
 

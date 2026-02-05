@@ -96,4 +96,13 @@ public class SolicitudProductoServiceImpl implements SolicitudProductoService {
                                                 .fromEntityToModel(solicitudProductoEntity));
         }
 
+        @Override
+        public SolicitudProductoDto getById(long id) {
+                SolicitudProductoEntity entity = solicitudProductoRepository.findById(id)
+                                .orElseThrow(() -> new BusinessException("No se encontró la solicitud de producto."));
+
+                return SolicitudProductoMapper.getInstance().fromModelToDto(
+                                SolicitudProductoMapper.getInstance().fromEntityToModel(entity));
+        }
+
 }
