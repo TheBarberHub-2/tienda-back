@@ -14,6 +14,7 @@ import com.fpmislata.daw.tienda.domain.repository.SolicitudProductoRepository;
 import com.fpmislata.daw.tienda.domain.repository.SolicitudRepository;
 import com.fpmislata.daw.tienda.domain.repository.UsuarioRepository;
 import com.fpmislata.daw.tienda.domain.service.AuthService;
+import com.fpmislata.daw.tienda.domain.service.CarritoService;
 import com.fpmislata.daw.tienda.domain.service.CategoriaService;
 import com.fpmislata.daw.tienda.domain.service.PeluqueriaHorarioService;
 import com.fpmislata.daw.tienda.domain.service.PeluqueriaService;
@@ -24,6 +25,7 @@ import com.fpmislata.daw.tienda.domain.service.SolicitudProductoService;
 import com.fpmislata.daw.tienda.domain.service.SolicitudService;
 import com.fpmislata.daw.tienda.domain.service.UsuarioService;
 import com.fpmislata.daw.tienda.domain.service.impl.AuthServiceImpl;
+import com.fpmislata.daw.tienda.domain.service.impl.CarritoServiceImpl;
 import com.fpmislata.daw.tienda.domain.service.impl.CategoriaServiceImpl;
 import com.fpmislata.daw.tienda.domain.service.impl.PeluqueriaHorarioServiceImpl;
 import com.fpmislata.daw.tienda.domain.service.impl.PeluqueriaServiceImpl;
@@ -165,5 +167,10 @@ public class SpringConfig {
             CategoriaService categoriaService) {
         return new SolicitudProductoServiceImpl(solicitudProductoRepository, solicitudRepository,
                 authService, categoriaService);
+    }
+
+    @Bean
+    public CarritoService carritoService(ProductoRepository productoRepository, PeluqueriaService peluqueriaService) {
+        return new CarritoServiceImpl(productoRepository, peluqueriaService);
     }
 }
