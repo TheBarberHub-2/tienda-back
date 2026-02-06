@@ -8,6 +8,8 @@ import com.fpmislata.daw.tienda.persistence.dao.jpa.CategoriaJpaDao;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.PeluqueriaHorarioJpaDao;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.PeluqueriaJpaDao;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.ProductoJpaDao;
+import com.fpmislata.daw.tienda.persistence.dao.jpa.ReservaJpaDao;
+import com.fpmislata.daw.tienda.persistence.dao.jpa.ReservaProductoJpaDao;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.SesionJpaDao;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.SolicitudJpaDao;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.SolicitudPeluqueriaJpaDao;
@@ -17,6 +19,8 @@ import com.fpmislata.daw.tienda.persistence.dao.jpa.impl.CategoriaJpaDaoImpl;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.impl.PeluqueriaHorarioJpaDaoImpl;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.impl.PeluqueriaJpaDaoImpl;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.impl.ProductoJpaDaoImpl;
+import com.fpmislata.daw.tienda.persistence.dao.jpa.impl.ReservaJpaDaoImpl;
+import com.fpmislata.daw.tienda.persistence.dao.jpa.impl.ReservaProductoJpaDaoImpl;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.impl.SesionJpaDaoImpl;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.impl.SolicitudJpaDaoImpl;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.impl.SolicitudPeluqueriaJpaDaoImpl;
@@ -70,5 +74,15 @@ public class PersistenceConfig {
     @Bean
     public SolicitudProductoJpaDao solicitudProductoJpaDao() {
         return new SolicitudProductoJpaDaoImpl();
+    }
+
+    @Bean
+    public ReservaJpaDao reservaJpaDao() {
+        return new ReservaJpaDaoImpl();
+    }
+
+    @Bean
+    public ReservaProductoJpaDao reservaProductoJpaDao() {
+        return new ReservaProductoJpaDaoImpl();
     }
 }

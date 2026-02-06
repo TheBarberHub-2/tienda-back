@@ -1,5 +1,6 @@
 package com.fpmislata.daw.tienda.domain.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.fpmislata.daw.tienda.domain.model.Page;
@@ -18,4 +19,6 @@ public interface ProductoService {
     ProductoDto update(ProductoDto productoDto);
 
     void delete(long id);
+
+    List<ProductoDto> findByIds(List<Long> ids);
 }

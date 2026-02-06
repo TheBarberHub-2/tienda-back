@@ -46,4 +46,11 @@ public class PeluqueriaHorarioRepositoryImpl implements PeluqueriaHorarioReposit
         peluqueriaHorarioJpaDao.delete(id);
     }
 
+    @Override
+    public List<PeluqueriaHorarioEntity> findByPeluqueriaAndDia(long peluqueriaId, int diaSemana) {
+        return peluqueriaHorarioJpaDao.findByPeluqueriaAndDiaSemana(peluqueriaId, diaSemana).stream()
+                .map(PeluqueriaHorarioMapper.getInstance()::fromJpaToEntity)
+                .toList();
+    }
+
 }

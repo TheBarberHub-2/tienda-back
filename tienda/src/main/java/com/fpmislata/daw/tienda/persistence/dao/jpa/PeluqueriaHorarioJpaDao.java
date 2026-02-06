@@ -6,4 +6,6 @@ import com.fpmislata.daw.tienda.persistence.dao.jpa.entity.PeluqueriaHorarioJpaE
 
 public interface PeluqueriaHorarioJpaDao extends GenericJpaDao<PeluqueriaHorarioJpaEntity> {
     List<PeluqueriaHorarioJpaEntity> findByPeluqueria(long peluqueriaId);
+
+    List<PeluqueriaHorarioJpaEntity> findByPeluqueriaAndDiaSemana(long peluqueriaId, int diaSemana);
 }

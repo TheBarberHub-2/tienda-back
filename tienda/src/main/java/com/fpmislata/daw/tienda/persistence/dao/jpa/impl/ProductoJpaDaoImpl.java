@@ -62,4 +62,24 @@ public class ProductoJpaDaoImpl implements ProductoJpaDao {
                 .getSingleResult();
     }
 
+    @Override
+    public List<ProductoJpaEntity> findByIds(List<Long> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return List.of();
+        }
+
+        String sql = "SELECT p FROM ProductoJpaEntity p WHERE p.id IN :ids";
+        return entityManager.createQuery(sql, ProductoJpaEntity.class)
+                .setParameter("ids", ids)
+                .getResultList();
+    }
+
+    @Override
+    public List<ProductoJpaEntity> findByPeluqueria(long peluqueriaId) {
+        String sql = "SELECT p FROM ProductoJpaEntity p WHERE p.peluqueria.id = :peluqueriaId";
+        return entityManager.createQuery(sql, ProductoJpaEntity.class)
+                .setParameter("peluqueriaId", peluqueriaId)
+                .getResultList();
+    }
+
 }

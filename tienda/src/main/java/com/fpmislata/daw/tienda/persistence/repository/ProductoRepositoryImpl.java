@@ -46,4 +46,18 @@ public class ProductoRepositoryImpl implements ProductoRepository {
     public void deleteById(long id) {
         productoJpaDao.delete(id);
     }
+
+    @Override
+    public List<ProductoEntity> findByIds(List<Long> ids) {
+        return productoJpaDao.findByIds(ids).stream()
+                .map(ProductoMapper.getInstance()::fromJpaToEntity)
+                .toList();
+    }
+
+    @Override
+    public List<ProductoEntity> findByPeluqueria(long peluqueriaId) {
+        return productoJpaDao.findByPeluqueria(peluqueriaId).stream()
+                .map(ProductoMapper.getInstance()::fromJpaToEntity)
+                .toList();
+    }
 }

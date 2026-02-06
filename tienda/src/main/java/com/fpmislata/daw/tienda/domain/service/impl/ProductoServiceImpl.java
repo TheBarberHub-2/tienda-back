@@ -80,4 +80,14 @@ public class ProductoServiceImpl implements ProductoService {
 
         productoRepository.deleteById(id);
     }
+
+    @Override
+    public List<ProductoDto> findByIds(List<Long> ids) {
+        List<ProductoDto> dtos = productoRepository.findByIds(ids).stream()
+                .map(ProductoMapper.getInstance()::fromEntityToModel)
+                .map(ProductoMapper.getInstance()::fromModelToDto)
+                .toList();
+
+        return dtos;
+    }
 }
