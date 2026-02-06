@@ -22,6 +22,9 @@ public class ReservaMapper {
         return INSTANCE;
     }
 
+    // ---------------------------------------------------------
+    // ENTITY → JPA
+    // ---------------------------------------------------------
     public ReservaJpaEntity fromEntityToJpa(ReservaEntity entity) {
         if (entity == null) {
             return null;
@@ -49,6 +52,9 @@ public class ReservaMapper {
                 productosJpa);
     }
 
+    // ---------------------------------------------------------
+    // JPA → ENTITY
+    // ---------------------------------------------------------
     public ReservaEntity fromJpaToEntity(ReservaJpaEntity jpa) {
         if (jpa == null) {
             return null;

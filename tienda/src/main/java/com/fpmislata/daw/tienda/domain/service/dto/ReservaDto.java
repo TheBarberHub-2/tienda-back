@@ -11,7 +11,6 @@ import com.fpmislata.daw.tienda.domain.validation.ValidReservaHoras;
 import com.fpmislata.daw.tienda.domain.validation.ValidReservaTimestamps;
 
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 
 @ValidReservaHoras
 @ValidReservaTimestamps
@@ -31,7 +30,7 @@ public record ReservaDto(
 
         LocalTime horaFinal,
 
-        @NotNull(message = "El precio total no puede ser nulo") @Positive(message = "El precio total debe ser positivo") Double precioTotal,
+        Double precioTotal,
 
         @NotNull(message = "El estado no puede ser nulo") EstadoReserva estado,
 

@@ -8,6 +8,7 @@ import com.fpmislata.daw.tienda.domain.repository.CategoriaRepository;
 import com.fpmislata.daw.tienda.domain.repository.PeluqueriaHorarioRepository;
 import com.fpmislata.daw.tienda.domain.repository.PeluqueriaRepository;
 import com.fpmislata.daw.tienda.domain.repository.ProductoRepository;
+import com.fpmislata.daw.tienda.domain.repository.ReservaProductoRepository;
 import com.fpmislata.daw.tienda.domain.repository.ReservaRepository;
 import com.fpmislata.daw.tienda.domain.repository.SesionRepository;
 import com.fpmislata.daw.tienda.domain.repository.SolicitudPeluqueriaRepository;
@@ -20,6 +21,7 @@ import com.fpmislata.daw.tienda.domain.service.CategoriaService;
 import com.fpmislata.daw.tienda.domain.service.PeluqueriaHorarioService;
 import com.fpmislata.daw.tienda.domain.service.PeluqueriaService;
 import com.fpmislata.daw.tienda.domain.service.ProductoService;
+import com.fpmislata.daw.tienda.domain.service.ReservaService;
 import com.fpmislata.daw.tienda.domain.service.SesionService;
 import com.fpmislata.daw.tienda.domain.service.SolicitudPeluqueriaService;
 import com.fpmislata.daw.tienda.domain.service.SolicitudProductoService;
@@ -31,6 +33,7 @@ import com.fpmislata.daw.tienda.domain.service.impl.CategoriaServiceImpl;
 import com.fpmislata.daw.tienda.domain.service.impl.PeluqueriaHorarioServiceImpl;
 import com.fpmislata.daw.tienda.domain.service.impl.PeluqueriaServiceImpl;
 import com.fpmislata.daw.tienda.domain.service.impl.ProductoServiceImpl;
+import com.fpmislata.daw.tienda.domain.service.impl.ReservaServiceImpl;
 import com.fpmislata.daw.tienda.domain.service.impl.SesionServiceImpl;
 import com.fpmislata.daw.tienda.domain.service.impl.SolicitudPeluqueriaServiceImpl;
 import com.fpmislata.daw.tienda.domain.service.impl.SolicitudProductoServiceImpl;
@@ -42,6 +45,7 @@ import com.fpmislata.daw.tienda.persistence.dao.jpa.PeluqueriaHorarioJpaDao;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.PeluqueriaJpaDao;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.ProductoJpaDao;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.ReservaJpaDao;
+import com.fpmislata.daw.tienda.persistence.dao.jpa.ReservaProductoJpaDao;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.SesionJpaDao;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.SolicitudJpaDao;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.SolicitudPeluqueriaJpaDao;
@@ -51,6 +55,7 @@ import com.fpmislata.daw.tienda.persistence.repository.CategoriaRepositoryImpl;
 import com.fpmislata.daw.tienda.persistence.repository.PeluqueriaHorarioRepositoryImpl;
 import com.fpmislata.daw.tienda.persistence.repository.PeluqueriaRepositoryImpl;
 import com.fpmislata.daw.tienda.persistence.repository.ProductoRepositoryImpl;
+import com.fpmislata.daw.tienda.persistence.repository.ReservaProductoRepositoryImpl;
 import com.fpmislata.daw.tienda.persistence.repository.ReservaRepositoryImpl;
 import com.fpmislata.daw.tienda.persistence.repository.SesionRepositoryImpl;
 import com.fpmislata.daw.tienda.persistence.repository.SolicitudPeluqueriaRepositoryImpl;
@@ -175,6 +180,19 @@ public class SpringConfig {
     @Bean
     public ReservaRepository reservaRepository(ReservaJpaDao reservaJpaDao) {
         return new ReservaRepositoryImpl(reservaJpaDao);
+    }
+
+    @Bean
+    public ReservaService reservaService(ReservaRepository reservaRepository,
+            ReservaProductoRepository reservaProductoRepository, ProductoRepository productoRepository,
+            PeluqueriaHorarioRepository peluqueriaHorarioRepository) {
+        return new ReservaServiceImpl(reservaRepository, reservaProductoRepository, productoRepository,
+                peluqueriaHorarioRepository);
+    }
+
+    @Bean
+    public ReservaProductoRepository reservaProductoRepository(ReservaProductoJpaDao reservaProductoJpaDao) {
+        return new ReservaProductoRepositoryImpl(reservaProductoJpaDao);
     }
 
     @Bean
