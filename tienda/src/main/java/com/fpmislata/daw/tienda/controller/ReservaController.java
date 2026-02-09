@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -200,6 +201,63 @@ public class ReservaController {
                 List<ReservaResponse> response = reservas.stream()
                                 .map(ReservaMapper.getInstance()::fromDtoToResponse)
                                 .toList();
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+
+        @RequireRole(roles = { Rol.Admin, Rol.Cliente })
+        @PutMapping("/cancelar/cliente/{reservaId}")
+        public ResponseEntity<ReservaResponse> cancelarReservaCliente(@PathVariable long reservaId) {
+                HttpServletRequest httpRequest = ((ServletRequestAttributes) RequestContextHolder
+                                .getRequestAttributes())
+                                .getRequest();
+
+                String token = httpRequest.getHeader("token");
+                UsuarioDto logged = authService.getByToken(token);
+
+                ReservaDto result = reservaService.cancelarReservaPorCliente(reservaId, logged.id());
+
+                ReservaResponse response = ReservaMapper.getInstance().fromDtoToResponse(result);
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+
+        @RequireRole(roles = { Rol.Peluqueria })
+        @PutMapping("/cancelar/peluqueria/{reservaId}")
+        public ResponseEntity<ReservaResponse> cancelarReservaPeluqueria(@PathVariable long reservaId) {
+
+                HttpServletRequest httpRequest = ((ServletRequestAttributes) RequestContextHolder
+                                .getRequestAttributes())
+                                .getRequest();
+
+                String token = httpRequest.getHeader("token");
+                UsuarioDto logged = authService.getByToken(token);
+
+                PeluqueriaDto peluqueriaDto = peluqueriaService.findByUsuario(logged.id());
+
+                ReservaDto result = reservaService.cancelarReservaPorPeluqueria(reservaId, peluqueriaDto.id());
+
+                ReservaResponse response = ReservaMapper.getInstance().fromDtoToResponse(result);
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+
+        @RequireRole(roles = { Rol.Peluqueria })
+        @PutMapping("/confirmar/peluqueria/{reservaId}")
+        public ResponseEntity<ReservaResponse> confirmarReservaPeluqueria(@PathVariable long reservaId) {
+
+                HttpServletRequest httpRequest = ((ServletRequestAttributes) RequestContextHolder
+                                .getRequestAttributes())
+                                .getRequest();
+
+                String token = httpRequest.getHeader("token");
+                UsuarioDto logged = authService.getByToken(token);
+
+                PeluqueriaDto peluqueriaDto = peluqueriaService.findByUsuario(logged.id());
+
+                ReservaDto result = reservaService.confirmarReserva(reservaId, peluqueriaDto.id());
+
+                ReservaResponse response = ReservaMapper.getInstance().fromDtoToResponse(result);
 
                 return new ResponseEntity<>(response, HttpStatus.OK);
         }

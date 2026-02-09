@@ -116,4 +116,31 @@ public class ReservaJpaDaoImpl implements ReservaJpaDao {
 
         return query.getResultList();
     }
+
+    @Override
+    public Optional<ReservaJpaEntity> findByIdAndClienteId(long reservaId, long clienteId) {
+        String sql = "SELECT r FROM ReservaJpaEntity r WHERE r.id = :reservaId AND r.cliente.id = :clienteId";
+
+        TypedQuery<ReservaJpaEntity> query = entityManager.createQuery(sql, ReservaJpaEntity.class)
+                .setParameter("reservaId", reservaId)
+                .setParameter("clienteId", clienteId);
+
+        List<ReservaJpaEntity> results = query.getResultList();
+
+        return results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
+    }
+
+    @Override
+    public Optional<ReservaJpaEntity> findByIdAndPeluqueriaId(long reservaId, long peluqueriaId) {
+        String sql = "SELECT r FROM ReservaJpaEntity r " +
+                "WHERE r.id = :reservaId AND r.peluqueria.id = :peluqueriaId";
+
+        TypedQuery<ReservaJpaEntity> query = entityManager.createQuery(sql, ReservaJpaEntity.class)
+                .setParameter("reservaId", reservaId)
+                .setParameter("peluqueriaId", peluqueriaId);
+
+        List<ReservaJpaEntity> results = query.getResultList();
+
+        return results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
+    }
 }

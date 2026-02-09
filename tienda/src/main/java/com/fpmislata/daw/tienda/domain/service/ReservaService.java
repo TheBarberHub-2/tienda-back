@@ -14,4 +14,10 @@ public interface ReservaService {
     List<ReservaDto> listarReservasPeluqueria(long peluqueriaId);
 
     List<ReservaDto> listarReservasPeluqueriaPorEstado(long peluqueriaId, String estado);
+
+    ReservaDto cancelarReservaPorCliente(long reservaId, long clienteId);
+
+    ReservaDto cancelarReservaPorPeluqueria(long reservaId, long peluqueriaId);
+
+    ReservaDto confirmarReserva(long reservaId, long peluqueriaId);
 }

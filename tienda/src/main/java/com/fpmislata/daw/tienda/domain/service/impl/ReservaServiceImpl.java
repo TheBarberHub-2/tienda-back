@@ -19,6 +19,7 @@ import com.fpmislata.daw.tienda.domain.repository.entity.PeluqueriaHorarioEntity
 import com.fpmislata.daw.tienda.domain.repository.entity.ProductoEntity;
 import com.fpmislata.daw.tienda.domain.repository.entity.ReservaEntity;
 import com.fpmislata.daw.tienda.domain.repository.entity.ReservaProductoEntity;
+import com.fpmislata.daw.tienda.domain.service.EmailService;
 import com.fpmislata.daw.tienda.domain.service.ReservaService;
 import com.fpmislata.daw.tienda.domain.service.dto.ReservaDto;
 import com.fpmislata.daw.tienda.domain.service.dto.ReservaProductoDto;
@@ -31,17 +32,19 @@ public class ReservaServiceImpl implements ReservaService {
     private final ReservaProductoRepository reservaProductoRepository;
     private final ProductoRepository productoRepository;
     private final PeluqueriaHorarioRepository peluqueriaHorarioRepository;
+    private final EmailService emailService;
 
     public ReservaServiceImpl(
             ReservaRepository reservaRepository,
             ReservaProductoRepository reservaProductoRepository,
             ProductoRepository productoRepository,
-            PeluqueriaHorarioRepository horarioRepository) {
+            PeluqueriaHorarioRepository horarioRepository, EmailService emailService) {
 
         this.reservaRepository = reservaRepository;
         this.reservaProductoRepository = reservaProductoRepository;
         this.productoRepository = productoRepository;
         this.peluqueriaHorarioRepository = horarioRepository;
+        this.emailService = emailService;
     }
 
     @Override
@@ -266,5 +269,112 @@ public class ReservaServiceImpl implements ReservaService {
                 .map(ReservaMapper.getInstance()::fromEntityToModel)
                 .map(ReservaMapper.getInstance()::fromModelToDto)
                 .toList();
+    }
+
+    @Override
+    public ReservaDto cancelarReservaPorCliente(long reservaId, long clienteId) {
+        ReservaEntity reserva = reservaRepository.findByIdAndClienteId(reservaId, clienteId)
+                .orElseThrow(() -> new BusinessException("La reserva no pertenece al cliente"));
+
+        if (reserva.estado() == EstadoReserva.Cancelada || reserva.estado() == EstadoReserva.Completada) {
+            throw new BusinessException("La reserva ya no puede cancelarse");
+        }
+
+        LocalDateTime fechaHoraReserva = LocalDateTime.of(
+                reserva.fechaReserva(),
+                reserva.horaInicio());
+
+        if (LocalDateTime.now().plusHours(24).isAfter(fechaHoraReserva)) {
+            throw new BusinessException("Solo se puede cancelar con 24 horas de antelación");
+        }
+
+        ReservaEntity updated = new ReservaEntity(
+                reserva.id(),
+                reserva.cliente(),
+                reserva.peluqueria(),
+                reserva.diaSemana(),
+                reserva.fechaReserva(),
+                reserva.horaInicio(),
+                reserva.horaFinal(),
+                reserva.precioTotal(),
+                EstadoReserva.Cancelada,
+                reserva.createdAt(),
+                LocalDateTime.now(),
+                reserva.productos());
+
+        reservaRepository.save(updated);
+
+        emailService.enviarCancelacionPeluqueria(reserva);
+
+        return ReservaMapper.getInstance().fromModelToDto(ReservaMapper.getInstance().fromEntityToModel(updated));
+    }
+
+    @Override
+    public ReservaDto cancelarReservaPorPeluqueria(long reservaId, long peluqueriaId) {
+
+        ReservaEntity reserva = reservaRepository.findByIdAndPeluqueriaId(reservaId, peluqueriaId)
+                .orElseThrow(() -> new BusinessException("La reserva no pertenece a esta peluquería"));
+
+        if (reserva.estado() == EstadoReserva.Cancelada || reserva.estado() == EstadoReserva.Completada) {
+            throw new BusinessException("La reserva ya no puede cancelarse");
+        }
+
+        ReservaEntity updated = new ReservaEntity(
+                reserva.id(),
+                reserva.cliente(),
+                reserva.peluqueria(),
+                reserva.diaSemana(),
+                reserva.fechaReserva(),
+                reserva.horaInicio(),
+                reserva.horaFinal(),
+                reserva.precioTotal(),
+                EstadoReserva.Cancelada,
+                reserva.createdAt(),
+                LocalDateTime.now(),
+                reserva.productos());
+
+        reservaRepository.save(updated);
+
+        emailService.enviarCancelacionCliente(reserva);
+
+        return ReservaMapper.getInstance()
+                .fromModelToDto(ReservaMapper.getInstance().fromEntityToModel(updated));
+    }
+
+    @Override
+    public ReservaDto confirmarReserva(long reservaId, long peluqueriaId) {
+        ReservaEntity reserva = reservaRepository.findByIdAndPeluqueriaId(reservaId, peluqueriaId)
+                .orElseThrow(() -> new BusinessException("La reserva no pertenece a esta peluquería"));
+
+        if (reserva.estado() == EstadoReserva.Cancelada || reserva.estado() == EstadoReserva.Completada) {
+            throw new BusinessException("La reserva ya no puede completarse");
+        }
+
+        LocalDateTime fechaHoraReserva = LocalDateTime.of(
+                reserva.fechaReserva(),
+                reserva.horaFinal());
+
+        if (LocalDateTime.now().isBefore(fechaHoraReserva)) {
+            throw new BusinessException("No puedes completar una reserva no acabada");
+        }
+
+        ReservaEntity updated = new ReservaEntity(
+                reserva.id(),
+                reserva.cliente(),
+                reserva.peluqueria(),
+                reserva.diaSemana(),
+                reserva.fechaReserva(),
+                reserva.horaInicio(),
+                reserva.horaFinal(),
+                reserva.precioTotal(),
+                EstadoReserva.Completada,
+                reserva.createdAt(),
+                LocalDateTime.now(),
+                reserva.productos());
+
+        reservaRepository.save(updated);
+
+        return ReservaMapper.getInstance()
+                .fromModelToDto(ReservaMapper.getInstance().fromEntityToModel(updated));
     }
 }

@@ -3,6 +3,7 @@ package com.fpmislata.daw.tienda.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.mail.javamail.JavaMailSender;
 
 import com.fpmislata.daw.tienda.domain.repository.CategoriaRepository;
 import com.fpmislata.daw.tienda.domain.repository.PeluqueriaHorarioRepository;
@@ -18,6 +19,7 @@ import com.fpmislata.daw.tienda.domain.repository.UsuarioRepository;
 import com.fpmislata.daw.tienda.domain.service.AuthService;
 import com.fpmislata.daw.tienda.domain.service.CarritoService;
 import com.fpmislata.daw.tienda.domain.service.CategoriaService;
+import com.fpmislata.daw.tienda.domain.service.EmailService;
 import com.fpmislata.daw.tienda.domain.service.PeluqueriaHorarioService;
 import com.fpmislata.daw.tienda.domain.service.PeluqueriaService;
 import com.fpmislata.daw.tienda.domain.service.ProductoService;
@@ -30,6 +32,7 @@ import com.fpmislata.daw.tienda.domain.service.UsuarioService;
 import com.fpmislata.daw.tienda.domain.service.impl.AuthServiceImpl;
 import com.fpmislata.daw.tienda.domain.service.impl.CarritoServiceImpl;
 import com.fpmislata.daw.tienda.domain.service.impl.CategoriaServiceImpl;
+import com.fpmislata.daw.tienda.domain.service.impl.EmailServiceImpl;
 import com.fpmislata.daw.tienda.domain.service.impl.PeluqueriaHorarioServiceImpl;
 import com.fpmislata.daw.tienda.domain.service.impl.PeluqueriaServiceImpl;
 import com.fpmislata.daw.tienda.domain.service.impl.ProductoServiceImpl;
@@ -185,9 +188,9 @@ public class SpringConfig {
     @Bean
     public ReservaService reservaService(ReservaRepository reservaRepository,
             ReservaProductoRepository reservaProductoRepository, ProductoRepository productoRepository,
-            PeluqueriaHorarioRepository peluqueriaHorarioRepository) {
+            PeluqueriaHorarioRepository peluqueriaHorarioRepository, EmailService emailService) {
         return new ReservaServiceImpl(reservaRepository, reservaProductoRepository, productoRepository,
-                peluqueriaHorarioRepository);
+                peluqueriaHorarioRepository, emailService);
     }
 
     @Bean
@@ -200,5 +203,10 @@ public class SpringConfig {
             PeluqueriaHorarioRepository peluqueriaHorarioRepository, ReservaRepository reservaRepository) {
         return new CarritoServiceImpl(productoRepository, peluqueriaService, peluqueriaHorarioRepository,
                 reservaRepository);
+    }
+
+    @Bean
+    public EmailService emailService(JavaMailSender mailSender) {
+        return new EmailServiceImpl(mailSender);
     }
 }
