@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import com.fpmislata.daw.tienda.enums.EstadoReserva;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.ReservaJpaDao;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.entity.ReservaJpaEntity;
 
@@ -71,6 +72,48 @@ public class ReservaJpaDaoImpl implements ReservaJpaDao {
         TypedQuery<ReservaJpaEntity> query = entityManager.createQuery(sql, ReservaJpaEntity.class);
         query.setParameter("peluqueriaId", peluqueriaId);
         query.setParameter("fecha", fecha);
+        return query.getResultList();
+    }
+
+    @Override
+    public List<ReservaJpaEntity> findByCliente(long clienteId) {
+        String sql = "SELECT r FROM ReservaJpaEntity r WHERE r.cliente.id = :clienteId ORDER BY r.fechaReserva, r.horaInicio";
+
+        TypedQuery<ReservaJpaEntity> query = entityManager.createQuery(sql, ReservaJpaEntity.class)
+                .setParameter("clienteId", clienteId);
+
+        return query.getResultList();
+    }
+
+    @Override
+    public List<ReservaJpaEntity> findByClienteAndEstado(long clienteId, EstadoReserva estado) {
+        String sql = "SELECT r FROM ReservaJpaEntity r WHERE r.cliente.id = :clienteId AND r.estado = :estado ORDER BY r.fechaReserva, r.horaInicio";
+
+        TypedQuery<ReservaJpaEntity> query = entityManager.createQuery(sql, ReservaJpaEntity.class)
+                .setParameter("clienteId", clienteId)
+                .setParameter("estado", estado);
+
+        return query.getResultList();
+    }
+
+    @Override
+    public List<ReservaJpaEntity> findByPeluqueria(long peluqueriaId) {
+        String sql = "SELECT r FROM ReservaJpaEntity r WHERE r.peluqueria.id = :peluqueriaId ORDER BY r.fechaReserva, r.horaInicio";
+
+        TypedQuery<ReservaJpaEntity> query = entityManager.createQuery(sql, ReservaJpaEntity.class)
+                .setParameter("peluqueriaId", peluqueriaId);
+
+        return query.getResultList();
+    }
+
+    @Override
+    public List<ReservaJpaEntity> findByPeluqueriaAndEstado(long peluqueriaId, EstadoReserva estado) {
+        String sql = "SELECT r FROM ReservaJpaEntity r WHERE r.peluqueria.id = :peluqueriaId AND r.estado = :estado ORDER BY r.fechaReserva, r.horaInicio";
+
+        TypedQuery<ReservaJpaEntity> query = entityManager.createQuery(sql, ReservaJpaEntity.class)
+                .setParameter("peluqueriaId", peluqueriaId)
+                .setParameter("estado", estado);
+
         return query.getResultList();
     }
 }

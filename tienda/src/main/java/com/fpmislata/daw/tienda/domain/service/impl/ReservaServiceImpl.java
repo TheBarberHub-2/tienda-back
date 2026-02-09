@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.fpmislata.daw.tienda.domain.mapper.PeluqueriaMapper;
 import com.fpmislata.daw.tienda.domain.mapper.ProductoMapper;
+import com.fpmislata.daw.tienda.domain.mapper.ReservaMapper;
 import com.fpmislata.daw.tienda.domain.mapper.UsuarioMapper;
 import com.fpmislata.daw.tienda.domain.repository.PeluqueriaHorarioRepository;
 import com.fpmislata.daw.tienda.domain.repository.ProductoRepository;
@@ -193,5 +194,77 @@ public class ReservaServiceImpl implements ReservaService {
                 throw new BusinessException("La reserva solapa con otra existente o invade el margen de seguridad");
             }
         }
+    }
+
+    @Override
+    public List<ReservaDto> listarReservasCliente(long clienteId) {
+        List<ReservaEntity> reservas = reservaRepository.findByCliente(clienteId);
+
+        return reservas.stream()
+                .map(ReservaMapper.getInstance()::fromEntityToModel)
+                .map(ReservaMapper.getInstance()::fromModelToDto)
+                .toList();
+    }
+
+    @Override
+    public List<ReservaDto> listarReservasClientePorEstado(long clienteId, String estado) {
+        if (estado == null || estado.isBlank()) {
+            throw new BusinessException("El estado no puede estar vacío");
+        }
+
+        String normalizado = estado.trim().toLowerCase();
+
+        String enumName = normalizado.substring(0, 1).toUpperCase() + normalizado.substring(1);
+
+        EstadoReserva estadoReserva;
+
+        try {
+            estadoReserva = EstadoReserva.fromString(enumName);
+        } catch (Exception e) {
+            throw new BusinessException("El estado " + estado + " no es válido");
+        }
+
+        List<ReservaEntity> reservas = reservaRepository.findByClienteAndEstado(clienteId, estadoReserva);
+
+        return reservas.stream()
+                .map(ReservaMapper.getInstance()::fromEntityToModel)
+                .map(ReservaMapper.getInstance()::fromModelToDto)
+                .toList();
+    }
+
+    @Override
+    public List<ReservaDto> listarReservasPeluqueria(long peluqueriaId) {
+        List<ReservaEntity> reservas = reservaRepository.findByPeluqueria(peluqueriaId);
+
+        return reservas.stream()
+                .map(ReservaMapper.getInstance()::fromEntityToModel)
+                .map(ReservaMapper.getInstance()::fromModelToDto)
+                .toList();
+    }
+
+    @Override
+    public List<ReservaDto> listarReservasPeluqueriaPorEstado(long peluqueriaId, String estado) {
+        if (estado == null || estado.isBlank()) {
+            throw new BusinessException("El estado no puede estar vacío");
+        }
+
+        String normalizado = estado.trim().toLowerCase();
+
+        String enumName = normalizado.substring(0, 1).toUpperCase() + normalizado.substring(1);
+
+        EstadoReserva estadoReserva;
+
+        try {
+            estadoReserva = EstadoReserva.fromString(enumName);
+        } catch (Exception e) {
+            throw new BusinessException("El estado " + estado + " no es válido");
+        }
+
+        List<ReservaEntity> reservas = reservaRepository.findByPeluqueriaAndEstado(peluqueriaId, estadoReserva);
+
+        return reservas.stream()
+                .map(ReservaMapper.getInstance()::fromEntityToModel)
+                .map(ReservaMapper.getInstance()::fromModelToDto)
+                .toList();
     }
 }

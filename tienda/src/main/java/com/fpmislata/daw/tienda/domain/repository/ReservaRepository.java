@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.fpmislata.daw.tienda.domain.repository.entity.ReservaEntity;
+import com.fpmislata.daw.tienda.enums.EstadoReserva;
 
 public interface ReservaRepository {
 
@@ -15,4 +16,12 @@ public interface ReservaRepository {
     void deleteById(long id);
 
     List<ReservaEntity> findByPeluqueriaAndFecha(long peluqueriaId, LocalDate fecha);
+
+    List<ReservaEntity> findByCliente(long clienteId);
+
+    List<ReservaEntity> findByClienteAndEstado(long clienteId, EstadoReserva estado);
+
+    List<ReservaEntity> findByPeluqueria(long peluqueriaId);
+
+    List<ReservaEntity> findByPeluqueriaAndEstado(long peluqueriaId, EstadoReserva estado);
 }
