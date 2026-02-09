@@ -5,8 +5,11 @@ import java.util.Optional;
 
 import com.fpmislata.daw.tienda.domain.mapper.PeluqueriaHorarioMapper;
 import com.fpmislata.daw.tienda.domain.repository.PeluqueriaHorarioRepository;
+import com.fpmislata.daw.tienda.domain.repository.ReservaRepository;
 import com.fpmislata.daw.tienda.domain.repository.entity.PeluqueriaHorarioEntity;
+import com.fpmislata.daw.tienda.domain.repository.entity.ReservaEntity;
 import com.fpmislata.daw.tienda.domain.service.PeluqueriaHorarioService;
+import com.fpmislata.daw.tienda.domain.service.ReservaService;
 import com.fpmislata.daw.tienda.domain.service.dto.PeluqueriaHorarioDto;
 import com.fpmislata.daw.tienda.exception.BusinessException;
 import com.fpmislata.daw.tienda.exception.ResourceNotFoundException;
@@ -14,9 +17,14 @@ import com.fpmislata.daw.tienda.exception.ResourceNotFoundException;
 public class PeluqueriaHorarioServiceImpl implements PeluqueriaHorarioService {
 
         private final PeluqueriaHorarioRepository peluqueriaHorarioRepository;
+        private final ReservaRepository reservaRepository;
+        private final ReservaService reservaService;
 
-        public PeluqueriaHorarioServiceImpl(PeluqueriaHorarioRepository peluqueriaHorarioRepository) {
+        public PeluqueriaHorarioServiceImpl(PeluqueriaHorarioRepository peluqueriaHorarioRepository,
+                        ReservaRepository reservaRepository, ReservaService reservaService) {
                 this.peluqueriaHorarioRepository = peluqueriaHorarioRepository;
+                this.reservaRepository = reservaRepository;
+                this.reservaService = reservaService;
         }
 
         @Override
@@ -32,19 +40,20 @@ public class PeluqueriaHorarioServiceImpl implements PeluqueriaHorarioService {
         }
 
         @Override
-        public PeluqueriaHorarioDto update(PeluqueriaHorarioDto peluqueriaHorarioDto) {
-                validarHorarios(peluqueriaHorarioDto);
-                peluqueriaHorarioRepository.findById(peluqueriaHorarioDto.id())
+        public PeluqueriaHorarioDto update(PeluqueriaHorarioDto dto) {
+
+                validarHorarios(dto);
+
+                PeluqueriaHorarioEntity original = peluqueriaHorarioRepository.findById(dto.id())
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "PeluqueriaHorario with id " + peluqueriaHorarioDto.id()
-                                                                + " not found"));
+                                                "PeluqueriaHorario with id " + dto.id() + " not found"));
 
-                PeluqueriaHorarioEntity entity = PeluqueriaHorarioMapper.getInstance().fromModelToEntity(
-                                PeluqueriaHorarioMapper.getInstance().fromDtoToModel(peluqueriaHorarioDto));
+                PeluqueriaHorarioEntity saved = peluqueriaHorarioRepository.save(original);
 
-                return PeluqueriaHorarioMapper.getInstance().fromModelToDto(
-                                PeluqueriaHorarioMapper.getInstance()
-                                                .fromEntityToModel(peluqueriaHorarioRepository.save(entity)));
+                cancelarReservasAfectadas(saved);
+
+                return PeluqueriaHorarioMapper.getInstance()
+                                .fromModelToDto(PeluqueriaHorarioMapper.getInstance().fromEntityToModel(saved));
         }
 
         @Override
@@ -85,11 +94,12 @@ public class PeluqueriaHorarioServiceImpl implements PeluqueriaHorarioService {
 
         @Override
         public void deleteById(long id) {
-                Optional<PeluqueriaHorarioDto> dto = findById(id);
 
-                if (dto.isEmpty()) {
-                        throw new ResourceNotFoundException("Horario with id: " + id + " not found");
-                }
+                PeluqueriaHorarioEntity horario = peluqueriaHorarioRepository.findById(id)
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Horario with id: " + id + " not found"));
+
+                cancelarReservasAfectadas(horario);
 
                 peluqueriaHorarioRepository.deleteById(id);
         }
@@ -101,4 +111,19 @@ public class PeluqueriaHorarioServiceImpl implements PeluqueriaHorarioService {
                                 .map(PeluqueriaHorarioMapper.getInstance()::fromModelToDto);
         }
 
+        private void cancelarReservasAfectadas(PeluqueriaHorarioEntity horario) {
+                List<ReservaEntity> reservas = reservaRepository.findByPeluqueriaAndDia(horario.peluqueria().id(),
+                                horario.diaSemana());
+
+                for (ReservaEntity reservaEntity : reservas) {
+                        boolean fueraHorario = reservaEntity.horaInicio().isBefore(horario.horaApertura()) ||
+                                        (reservaEntity.horaFinal() != null
+                                                        && reservaEntity.horaFinal().isAfter(horario.horaCierre()));
+
+                        if (fueraHorario) {
+                                reservaService.cancelarReservaPorPeluqueria(reservaEntity.id(),
+                                                reservaEntity.peluqueria().id());
+                        }
+                }
+        }
 }

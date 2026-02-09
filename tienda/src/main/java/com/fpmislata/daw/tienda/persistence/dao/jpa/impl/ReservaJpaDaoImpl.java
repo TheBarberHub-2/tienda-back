@@ -143,4 +143,17 @@ public class ReservaJpaDaoImpl implements ReservaJpaDao {
 
         return results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
     }
+
+    @Override
+    public List<ReservaJpaEntity> findByPeluqueriaAndDia(long peluqueriaId, int diaSemana) {
+        String sql = "SELECT r FROM ReservaJpaEntity r WHERE r.peluqueria.id = :peluqueriaId AND r.diaSemana = :diaSemana AND r.estado = 'Pendiente'";
+
+        TypedQuery<ReservaJpaEntity> query = entityManager.createQuery(sql, ReservaJpaEntity.class)
+                .setParameter("peluqueriaId", peluqueriaId)
+                .setParameter("diaSemana", diaSemana);
+
+        List<ReservaJpaEntity> results = query.getResultList();
+
+        return results;
+    }
 }

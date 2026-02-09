@@ -107,8 +107,8 @@ public class SpringConfig {
     }
 
     @Bean
-    public ProductoService productoService(ProductoRepository productoRepository) {
-        return new ProductoServiceImpl(productoRepository);
+    public ProductoService productoService(ProductoRepository productoRepository, ReservaService reservaService) {
+        return new ProductoServiceImpl(productoRepository, reservaService);
     }
 
     @Bean
@@ -132,8 +132,9 @@ public class SpringConfig {
     }
 
     @Bean
-    public PeluqueriaHorarioService peluqueriaHorarioService(PeluqueriaHorarioRepository peluqueriaHorarioRepository) {
-        return new PeluqueriaHorarioServiceImpl(peluqueriaHorarioRepository);
+    public PeluqueriaHorarioService peluqueriaHorarioService(PeluqueriaHorarioRepository peluqueriaHorarioRepository,
+            ReservaRepository reservaRepository, ReservaService reservaService) {
+        return new PeluqueriaHorarioServiceImpl(peluqueriaHorarioRepository, reservaRepository, reservaService);
     }
 
     @Bean

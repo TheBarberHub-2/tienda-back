@@ -25,6 +25,8 @@ public interface ReservaRepository {
 
     List<ReservaEntity> findByPeluqueriaAndEstado(long peluqueriaId, EstadoReserva estado);
 
+    List<ReservaEntity> findByPeluqueriaAndDia(long peluqueriaId, int diaSemana);
+
     Optional<ReservaEntity> findByIdAndClienteId(long reservaId, long clienteId);
 
     Optional<ReservaEntity> findByIdAndPeluqueriaId(long reservaId, long peluqueriaId);

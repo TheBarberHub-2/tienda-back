@@ -19,6 +19,8 @@ public interface ReservaJpaDao extends GenericJpaDao<ReservaJpaEntity> {
 
     List<ReservaJpaEntity> findByPeluqueriaAndEstado(long peluqueriaId, EstadoReserva estado);
 
+    List<ReservaJpaEntity> findByPeluqueriaAndDia(long peluqueriaId, int diaSemana);
+
     Optional<ReservaJpaEntity> findByIdAndClienteId(long reservaId, long clienteId);
 
     Optional<ReservaJpaEntity> findByIdAndPeluqueriaId(long reservaId, long peluqueriaId);

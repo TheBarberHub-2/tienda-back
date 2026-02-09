@@ -22,11 +22,12 @@ class ProductoServiceTest {
 
     private ProductoRepository productoRepository;
     private ProductoService productoService;
+    private ReservaService reservaService;
 
     @BeforeEach
     void setup() {
         productoRepository = mock(ProductoRepository.class);
-        productoService = new ProductoServiceImpl(productoRepository);
+        productoService = new ProductoServiceImpl(productoRepository, reservaService);
     }
 
     // ---------------------------------------------------------

@@ -86,4 +86,11 @@ public class ReservaRepositoryImpl implements ReservaRepository {
         return reservaJpaDao.findByIdAndPeluqueriaId(reservaId, peluqueriaId)
                 .map(ReservaMapper.getInstance()::fromJpaToEntity);
     }
+
+    @Override
+    public List<ReservaEntity> findByPeluqueriaAndDia(long peluqueriaId, int diaSemana) {
+        return reservaJpaDao.findByPeluqueriaAndDia(peluqueriaId, diaSemana).stream()
+                .map(ReservaMapper.getInstance()::fromJpaToEntity)
+                .toList();
+    }
 }

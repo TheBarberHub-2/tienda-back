@@ -8,15 +8,19 @@ import com.fpmislata.daw.tienda.domain.model.Page;
 import com.fpmislata.daw.tienda.domain.repository.ProductoRepository;
 import com.fpmislata.daw.tienda.domain.repository.entity.ProductoEntity;
 import com.fpmislata.daw.tienda.domain.service.ProductoService;
+import com.fpmislata.daw.tienda.domain.service.ReservaService;
 import com.fpmislata.daw.tienda.domain.service.dto.ProductoDto;
+import com.fpmislata.daw.tienda.domain.service.dto.ReservaDto;
 import com.fpmislata.daw.tienda.exception.ResourceNotFoundException;
 
 public class ProductoServiceImpl implements ProductoService {
 
     private final ProductoRepository productoRepository;
+    private final ReservaService reservaService;
 
-    public ProductoServiceImpl(ProductoRepository productoRepository) {
+    public ProductoServiceImpl(ProductoRepository productoRepository, ReservaService reservaService) {
         this.productoRepository = productoRepository;
+        this.reservaService = reservaService;
     }
 
     @Override
@@ -72,10 +76,17 @@ public class ProductoServiceImpl implements ProductoService {
 
     @Override
     public void delete(long id) {
-        Optional<ProductoDto> productoDto = findById(id);
+        ProductoDto producto = findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Producto with id " + id + " not found"));
 
-        if (productoDto.isEmpty()) {
-            throw new ResourceNotFoundException("Producto with id " + id + " not found");
+        List<ReservaDto> reservas = reservaService.listarReservasPeluqueria(producto.peluqueria().id())
+                .stream()
+                .filter(r -> r.productos().stream()
+                        .anyMatch(rp -> rp.producto().id() == producto.id()))
+                .toList();
+
+        for (ReservaDto reservaDto : reservas) {
+            reservaService.cancelarReservaPorPeluqueria(reservaDto.id(), producto.peluqueria().id());
         }
 
         productoRepository.deleteById(id);

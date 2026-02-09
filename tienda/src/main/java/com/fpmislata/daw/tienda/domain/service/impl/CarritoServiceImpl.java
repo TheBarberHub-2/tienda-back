@@ -25,6 +25,7 @@ import com.fpmislata.daw.tienda.domain.service.dto.CarritoInputDto;
 import com.fpmislata.daw.tienda.domain.service.dto.PeluqueriaDto;
 import com.fpmislata.daw.tienda.domain.service.dto.SlotsDisponiblesDto;
 import com.fpmislata.daw.tienda.domain.service.dto.SlotsDisponiblesInputDto;
+import com.fpmislata.daw.tienda.enums.EstadoReserva;
 import com.fpmislata.daw.tienda.exception.BusinessException;
 
 public class CarritoServiceImpl implements CarritoService {
@@ -114,7 +115,10 @@ public class CarritoServiceImpl implements CarritoService {
             throw new BusinessException("No hay horarios disponibles para la peluquería y día seleccionados");
         }
 
-        List<ReservaEntity> reservas = reservaRepository.findByPeluqueriaAndFecha(dto.peluqueriaId(), dto.fecha());
+        List<ReservaEntity> reservas = reservaRepository.findByPeluqueriaAndFecha(dto.peluqueriaId(), dto.fecha())
+                .stream()
+                .filter(r -> r.estado().equals(EstadoReserva.Pendiente))
+                .toList();
 
         List<String> horasDisponibles = generarSlots(horarios, reservas, dto.duracionTotal());
 

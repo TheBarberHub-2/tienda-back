@@ -181,7 +181,9 @@ public class ReservaServiceImpl implements ReservaService {
     }
 
     private void validarSolapamientos(Long peluqueriaId, LocalDate fecha, LocalTime inicio, LocalTime fin) {
-        List<ReservaEntity> reservas = reservaRepository.findByPeluqueriaAndFecha(peluqueriaId, fecha);
+        List<ReservaEntity> reservas = reservaRepository.findByPeluqueriaAndFecha(peluqueriaId, fecha).stream()
+                .filter(r -> r.estado().equals(EstadoReserva.Pendiente))
+                .toList();
 
         for (ReservaEntity r : reservas) {
             LocalTime rInicio = r.horaInicio();
