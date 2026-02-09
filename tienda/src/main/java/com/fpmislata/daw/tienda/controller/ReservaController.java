@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,65 +37,170 @@ import jakarta.servlet.http.HttpServletRequest;
 @RequestMapping("/api/reservas")
 public class ReservaController {
 
-    private final ReservaService reservaService;
-    private final UsuarioService usuarioService;
-    private final PeluqueriaService peluqueriaService;
-    private final ProductoService productoService;
-    private final AuthService authService;
+        private final ReservaService reservaService;
+        private final UsuarioService usuarioService;
+        private final PeluqueriaService peluqueriaService;
+        private final ProductoService productoService;
+        private final AuthService authService;
 
-    public ReservaController(
-            ReservaService reservaService,
-            UsuarioService usuarioService,
-            PeluqueriaService peluqueriaService,
-            ProductoService productoService,
-            AuthService authService) {
+        public ReservaController(
+                        ReservaService reservaService,
+                        UsuarioService usuarioService,
+                        PeluqueriaService peluqueriaService,
+                        ProductoService productoService,
+                        AuthService authService) {
 
-        this.reservaService = reservaService;
-        this.usuarioService = usuarioService;
-        this.peluqueriaService = peluqueriaService;
-        this.productoService = productoService;
-        this.authService = authService;
-    }
-
-    @RequireRole(roles = { Rol.Admin, Rol.Cliente })
-    @PostMapping("/crear")
-    public ResponseEntity<ReservaResponse> crearReserva(@RequestBody ReservaInsertRequest request) {
-
-        HttpServletRequest httpRequest = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
-                .getRequest();
-
-        String token = httpRequest.getHeader("token");
-
-        UsuarioDto usuarioDto = usuarioService.getById(request.clienteId());
-        UsuarioDto logged = authService.getByToken(token);
-
-        if (!usuarioDto.id().equals(logged.id())) {
-            throw new BusinessException("Solo puedes hacer reservas a tu nombre");
-        }
-        PeluqueriaDto peluqueriaDto = peluqueriaService.getById(request.peluqueriaId());
-        List<Long> ids = request.productoIds();
-        List<ProductoDto> productoDtos = productoService.findByIds(ids);
-
-        if (productoDtos.size() != ids.size()) {
-            throw new BusinessException("Algunos productos no existen");
+                this.reservaService = reservaService;
+                this.usuarioService = usuarioService;
+                this.peluqueriaService = peluqueriaService;
+                this.productoService = productoService;
+                this.authService = authService;
         }
 
-        List<ReservaProductoDto> reservaProductoDtos = productoDtos.stream()
-                .map(p -> new ReservaProductoDto(
-                        null,
-                        null,
-                        p))
-                .toList();
+        @RequireRole(roles = { Rol.Admin, Rol.Cliente })
+        @PostMapping("/crear")
+        public ResponseEntity<ReservaResponse> crearReserva(@RequestBody ReservaInsertRequest request) {
 
-        ReservaDto reservaDto = ReservaMapper.getInstance().fromRequestToDto(request, usuarioDto, peluqueriaDto,
-                reservaProductoDtos);
+                HttpServletRequest httpRequest = ((ServletRequestAttributes) RequestContextHolder
+                                .getRequestAttributes())
+                                .getRequest();
 
-        DtoValidator.validate(reservaDto);
+                String token = httpRequest.getHeader("token");
 
-        ReservaDto creada = reservaService.crearReserva(reservaDto);
+                UsuarioDto usuarioDto = usuarioService.getById(request.clienteId());
+                UsuarioDto logged = authService.getByToken(token);
 
-        ReservaResponse response = ReservaMapper.getInstance().fromDtoToResponse(creada);
+                if (!usuarioDto.id().equals(logged.id())) {
+                        throw new BusinessException("Solo puedes hacer reservas a tu nombre");
+                }
+                PeluqueriaDto peluqueriaDto = peluqueriaService.getById(request.peluqueriaId());
+                List<Long> ids = request.productoIds();
+                List<ProductoDto> productoDtos = productoService.findByIds(ids);
 
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
-    }
+                if (productoDtos.size() != ids.size()) {
+                        throw new BusinessException("Algunos productos no existen");
+                }
+
+                List<ReservaProductoDto> reservaProductoDtos = productoDtos.stream()
+                                .map(p -> new ReservaProductoDto(
+                                                null,
+                                                null,
+                                                p))
+                                .toList();
+
+                ReservaDto reservaDto = ReservaMapper.getInstance().fromRequestToDto(request, usuarioDto, peluqueriaDto,
+                                reservaProductoDtos);
+
+                DtoValidator.validate(reservaDto);
+
+                ReservaDto creada = reservaService.crearReserva(reservaDto);
+
+                ReservaResponse response = ReservaMapper.getInstance().fromDtoToResponse(creada);
+
+                return new ResponseEntity<>(response, HttpStatus.CREATED);
+        }
+
+        @RequireRole(roles = { Rol.Admin, Rol.Cliente })
+        @GetMapping("/cliente/{clienteId}")
+        public ResponseEntity<List<ReservaResponse>> listarReservasCliente(@PathVariable long clienteId) {
+                HttpServletRequest httpRequest = ((ServletRequestAttributes) RequestContextHolder
+                                .getRequestAttributes())
+                                .getRequest();
+
+                String token = httpRequest.getHeader("token");
+
+                UsuarioDto usuarioDto = usuarioService.getById(clienteId);
+                UsuarioDto logged = authService.getByToken(token);
+
+                if (!usuarioDto.id().equals(logged.id())) {
+                        throw new BusinessException("Solo puedes ver tus propias reservas");
+                }
+
+                List<ReservaDto> reservas = reservaService.listarReservasCliente(clienteId);
+
+                List<ReservaResponse> response = reservas.stream()
+                                .map(ReservaMapper.getInstance()::fromDtoToResponse)
+                                .toList();
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+
+        @RequireRole(roles = { Rol.Admin, Rol.Cliente })
+        @GetMapping("/cliente/{clienteId}/{estado}")
+        public ResponseEntity<List<ReservaResponse>> listarReservasClienteEstado(@PathVariable long clienteId,
+                        @PathVariable String estado) {
+                HttpServletRequest httpRequest = ((ServletRequestAttributes) RequestContextHolder
+                                .getRequestAttributes())
+                                .getRequest();
+
+                String token = httpRequest.getHeader("token");
+
+                UsuarioDto usuarioDto = usuarioService.getById(clienteId);
+                UsuarioDto logged = authService.getByToken(token);
+
+                if (!usuarioDto.id().equals(logged.id())) {
+                        throw new BusinessException("Solo puedes ver tus propias reservas");
+                }
+
+                List<ReservaDto> reservas = reservaService.listarReservasClientePorEstado(clienteId, estado);
+
+                List<ReservaResponse> response = reservas.stream()
+                                .map(ReservaMapper.getInstance()::fromDtoToResponse)
+                                .toList();
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+
+        @RequireRole(roles = { Rol.Peluqueria })
+        @GetMapping("/peluqueria/{peluqueriaId}")
+        public ResponseEntity<List<ReservaResponse>> listarReservasPeluqueria(@PathVariable long peluqueriaId) {
+                HttpServletRequest httpRequest = ((ServletRequestAttributes) RequestContextHolder
+                                .getRequestAttributes())
+                                .getRequest();
+
+                String token = httpRequest.getHeader("token");
+
+                PeluqueriaDto peluqueriaDto = peluqueriaService.getById(peluqueriaId);
+                UsuarioDto usuarioDto = peluqueriaDto.usuario();
+                UsuarioDto logged = authService.getByToken(token);
+
+                if (!usuarioDto.id().equals(logged.id())) {
+                        throw new BusinessException("Solo puedes ver las reservas de tu peluquería");
+                }
+
+                List<ReservaDto> reservas = reservaService.listarReservasPeluqueria(peluqueriaId);
+
+                List<ReservaResponse> response = reservas.stream()
+                                .map(ReservaMapper.getInstance()::fromDtoToResponse)
+                                .toList();
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+
+        @RequireRole(roles = { Rol.Peluqueria })
+        @GetMapping("/peluqueria/{peluqueriaId}/{estado}")
+        public ResponseEntity<List<ReservaResponse>> listarReservasPeluqueriaEstado(@PathVariable long peluqueriaId,
+                        @PathVariable String estado) {
+                HttpServletRequest httpRequest = ((ServletRequestAttributes) RequestContextHolder
+                                .getRequestAttributes())
+                                .getRequest();
+
+                String token = httpRequest.getHeader("token");
+
+                PeluqueriaDto peluqueriaDto = peluqueriaService.getById(peluqueriaId);
+                UsuarioDto usuarioDto = peluqueriaDto.usuario();
+                UsuarioDto logged = authService.getByToken(token);
+
+                if (!usuarioDto.id().equals(logged.id())) {
+                        throw new BusinessException("Solo puedes ver las reservas de tu peluquería");
+                }
+
+                List<ReservaDto> reservas = reservaService.listarReservasPeluqueriaPorEstado(peluqueriaId, estado);
+
+                List<ReservaResponse> response = reservas.stream()
+                                .map(ReservaMapper.getInstance()::fromDtoToResponse)
+                                .toList();
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+        }
 }

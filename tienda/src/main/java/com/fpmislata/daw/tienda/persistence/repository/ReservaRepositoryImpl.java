@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import com.fpmislata.daw.tienda.domain.repository.ReservaRepository;
 import com.fpmislata.daw.tienda.domain.repository.entity.ReservaEntity;
+import com.fpmislata.daw.tienda.enums.EstadoReserva;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.ReservaJpaDao;
 import com.fpmislata.daw.tienda.persistence.dao.jpa.entity.ReservaJpaEntity;
 import com.fpmislata.daw.tienda.persistence.repository.mapper.ReservaMapper;
@@ -42,6 +43,34 @@ public class ReservaRepositoryImpl implements ReservaRepository {
     @Override
     public List<ReservaEntity> findByPeluqueriaAndFecha(long peluqueriaId, LocalDate fecha) {
         return reservaJpaDao.findByPeluqueriaAndFecha(peluqueriaId, fecha).stream()
+                .map(ReservaMapper.getInstance()::fromJpaToEntity)
+                .toList();
+    }
+
+    @Override
+    public List<ReservaEntity> findByCliente(long clienteId) {
+        return reservaJpaDao.findByCliente(clienteId).stream()
+                .map(ReservaMapper.getInstance()::fromJpaToEntity)
+                .toList();
+    }
+
+    @Override
+    public List<ReservaEntity> findByClienteAndEstado(long clienteId, EstadoReserva estado) {
+        return reservaJpaDao.findByClienteAndEstado(clienteId, estado).stream()
+                .map(ReservaMapper.getInstance()::fromJpaToEntity)
+                .toList();
+    }
+
+    @Override
+    public List<ReservaEntity> findByPeluqueria(long peluqueriaId) {
+        return reservaJpaDao.findByPeluqueria(peluqueriaId).stream()
+                .map(ReservaMapper.getInstance()::fromJpaToEntity)
+                .toList();
+    }
+
+    @Override
+    public List<ReservaEntity> findByPeluqueriaAndEstado(long peluqueriaId, EstadoReserva estado) {
+        return reservaJpaDao.findByPeluqueriaAndEstado(peluqueriaId, estado).stream()
                 .map(ReservaMapper.getInstance()::fromJpaToEntity)
                 .toList();
     }
