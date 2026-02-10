@@ -44,13 +44,14 @@ public class PeluqueriaHorarioServiceImpl implements PeluqueriaHorarioService {
 
                 validarHorarios(dto);
 
-                PeluqueriaHorarioEntity original = peluqueriaHorarioRepository.findById(dto.id())
+                peluqueriaHorarioRepository.findById(dto.id())
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "PeluqueriaHorario with id " + dto.id() + " not found"));
 
-                PeluqueriaHorarioEntity saved = peluqueriaHorarioRepository.save(original);
+                PeluqueriaHorarioEntity saved = peluqueriaHorarioRepository.save(PeluqueriaHorarioMapper.getInstance()
+                                .fromModelToEntity(PeluqueriaHorarioMapper.getInstance().fromDtoToModel(dto)));
 
-                cancelarReservasAfectadas(saved);
+                cancelarReservasFueraDeHorarios(saved.peluqueria().id(), saved.diaSemana());
 
                 return PeluqueriaHorarioMapper.getInstance()
                                 .fromModelToDto(PeluqueriaHorarioMapper.getInstance().fromEntityToModel(saved));
@@ -99,9 +100,12 @@ public class PeluqueriaHorarioServiceImpl implements PeluqueriaHorarioService {
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "Horario with id: " + id + " not found"));
 
-                cancelarReservasAfectadas(horario);
+                long peluqueriaId = horario.peluqueria().id();
+                int diaSemana = horario.diaSemana();
 
                 peluqueriaHorarioRepository.deleteById(id);
+
+                cancelarReservasFueraDeHorarios(peluqueriaId, diaSemana);
         }
 
         @Override
@@ -111,18 +115,22 @@ public class PeluqueriaHorarioServiceImpl implements PeluqueriaHorarioService {
                                 .map(PeluqueriaHorarioMapper.getInstance()::fromModelToDto);
         }
 
-        private void cancelarReservasAfectadas(PeluqueriaHorarioEntity horario) {
-                List<ReservaEntity> reservas = reservaRepository.findByPeluqueriaAndDia(horario.peluqueria().id(),
-                                horario.diaSemana());
+        private void cancelarReservasFueraDeHorarios(long peluqueriaId, int diaSemana) {
+                List<PeluqueriaHorarioEntity> horarios = peluqueriaHorarioRepository
+                                .findByPeluqueriaAndDia(peluqueriaId, diaSemana);
 
-                for (ReservaEntity reservaEntity : reservas) {
-                        boolean fueraHorario = reservaEntity.horaInicio().isBefore(horario.horaApertura()) ||
-                                        (reservaEntity.horaFinal() != null
-                                                        && reservaEntity.horaFinal().isAfter(horario.horaCierre()));
+                List<ReservaEntity> reservas = reservaRepository.findByPeluqueriaAndDia(peluqueriaId, diaSemana);
 
-                        if (fueraHorario) {
-                                reservaService.cancelarReservaPorPeluqueria(reservaEntity.id(),
-                                                reservaEntity.peluqueria().id());
+                for (ReservaEntity reserva : reservas) {
+                        boolean dentro = horarios.stream().anyMatch(h -> {
+                                boolean starts = !reserva.horaInicio().isBefore(h.horaApertura());
+                                boolean ends = reserva.horaFinal() == null
+                                                || !reserva.horaFinal().isAfter(h.horaCierre());
+                                return starts && ends;
+                        });
+
+                        if (!dentro) {
+                                reservaService.cancelarReservaPorPeluqueria(reserva.id(), reserva.peluqueria().id());
                         }
                 }
         }
