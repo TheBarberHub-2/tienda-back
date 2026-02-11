@@ -37,6 +37,8 @@ public record ReservaDto(
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
 
+        String iban,
+
         List<ReservaProductoDto> productos) {
 
     public ReservaDto(
@@ -51,6 +53,7 @@ public record ReservaDto(
             EstadoReserva estado,
             LocalDateTime createdAt,
             LocalDateTime updatedAt,
+            String iban,
             List<ReservaProductoDto> productos) {
 
         this.id = id;
@@ -64,6 +67,7 @@ public record ReservaDto(
         this.estado = estado;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.iban = iban;
         this.productos = productos == null ? List.of() : List.copyOf(productos);
     }
 }

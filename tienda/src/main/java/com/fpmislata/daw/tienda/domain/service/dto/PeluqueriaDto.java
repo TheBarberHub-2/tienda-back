@@ -19,6 +19,8 @@ public record PeluqueriaDto(
 
         @NotNull(message = "El teléfono no puede ser nulo") @Pattern(regexp = "^\\+?[0-9]{9,15}$", message = "El teléfono debe tener entre 9 y 15 dígitos") String telefono,
 
+        String iban,
+
         List<ProductoDto> productos,
 
         List<PeluqueriaHorarioDto> horarios) {
@@ -28,6 +30,7 @@ public record PeluqueriaDto(
             String municipio,
             String direccion,
             String telefono,
+            String iban,
             List<ProductoDto> productos,
             List<PeluqueriaHorarioDto> horarios) {
         this.id = id;
@@ -35,6 +38,7 @@ public record PeluqueriaDto(
         this.municipio = municipio;
         this.direccion = direccion;
         this.telefono = telefono;
+        this.iban = iban;
         this.productos = productos == null ? List.of() : List.copyOf(productos);
         this.horarios = horarios == null ? List.of() : List.copyOf(horarios);
     }

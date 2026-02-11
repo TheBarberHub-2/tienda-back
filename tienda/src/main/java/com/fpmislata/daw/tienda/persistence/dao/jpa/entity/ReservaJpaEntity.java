@@ -63,6 +63,9 @@ public class ReservaJpaEntity implements Serializable {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Column(name = "iban", nullable = false)
+    private String iban;
+
     @OneToMany(mappedBy = "reserva", cascade = CascadeType.ALL)
     private List<ReservaProductoJpaEntity> productos = new ArrayList<>();
 
@@ -71,7 +74,7 @@ public class ReservaJpaEntity implements Serializable {
 
     public ReservaJpaEntity(Long id, UsuarioJpaEntity cliente, PeluqueriaJpaEntity peluqueria, byte diaSemana,
             LocalDate fechaReserva, LocalTime horaInicio, LocalTime horaFinal, Double precioTotal,
-            EstadoReserva estado, LocalDateTime createdAt, LocalDateTime updatedAt,
+            EstadoReserva estado, LocalDateTime createdAt, LocalDateTime updatedAt, String iban,
             List<ReservaProductoJpaEntity> productos) {
         this.id = id;
         this.cliente = cliente;
@@ -84,6 +87,7 @@ public class ReservaJpaEntity implements Serializable {
         this.estado = estado;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.iban = iban;
         this.productos = productos;
     }
 
@@ -173,6 +177,14 @@ public class ReservaJpaEntity implements Serializable {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getIban() {
+        return iban;
+    }
+
+    public void setIban(String iban) {
+        this.iban = iban;
     }
 
     public List<ReservaProductoJpaEntity> getProductos() {

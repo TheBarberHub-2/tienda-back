@@ -49,6 +49,7 @@ public class ReservaMapper {
                 entity.estado(),
                 entity.createdAt(),
                 entity.updatedAt(),
+                entity.iban(),
                 productosJpa);
     }
 
@@ -79,6 +80,7 @@ public class ReservaMapper {
                 jpa.getEstado(),
                 jpa.getCreatedAt(),
                 jpa.getUpdatedAt(),
+                jpa.getIban(),
                 productos);
     }
 }

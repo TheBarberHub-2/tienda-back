@@ -46,6 +46,7 @@ public class PeluqueriaMapper {
                 peluqueriaEntity.municipio(),
                 peluqueriaEntity.direccion(),
                 peluqueriaEntity.telefono(),
+                peluqueriaEntity.iban(),
                 productos,
                 horarios);
     }
@@ -72,6 +73,7 @@ public class PeluqueriaMapper {
                 peluqueriaJpaEntity.getMunicipio(),
                 peluqueriaJpaEntity.getDireccion(),
                 peluqueriaJpaEntity.getTelefono(),
+                peluqueriaJpaEntity.getIban(),
                 productos,
                 horarios);
     }

@@ -23,6 +23,7 @@ public class Reserva {
     private EstadoReserva estado;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private String iban;
     private List<ReservaProducto> productos;
 
     public Reserva(Long id,
@@ -36,6 +37,7 @@ public class Reserva {
             EstadoReserva estado,
             LocalDateTime createdAt,
             LocalDateTime updatedAt,
+            String iban,
             List<ReservaProducto> productos) {
 
         this.id = id;
@@ -49,6 +51,7 @@ public class Reserva {
         this.estado = estado;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.iban = iban;
         this.productos = (productos == null) ? new ArrayList<>() : new ArrayList<>(productos);
     }
 
@@ -138,6 +141,14 @@ public class Reserva {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getIban() {
+        return iban;
+    }
+
+    public void setIban(String iban) {
+        this.iban = iban;
     }
 
     public List<ReservaProducto> getProductos() {

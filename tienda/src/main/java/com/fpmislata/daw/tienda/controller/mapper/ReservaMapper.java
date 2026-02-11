@@ -51,6 +51,7 @@ public class ReservaMapper {
                 EstadoReserva.Pendiente, // estado inicial
                 null, // createdAt
                 null, // updatedAt
+                null,
                 productoDtos);
     }
 

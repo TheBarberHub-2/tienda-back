@@ -1,7 +1,15 @@
 package com.fpmislata.daw.tienda.domain.service.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
+
+import com.fpmislata.daw.tienda.controller.webModel.request.AutorizacionRequest;
+import com.fpmislata.daw.tienda.controller.webModel.request.DestinoRequest;
+import com.fpmislata.daw.tienda.controller.webModel.request.OrigenPagoTarjetaRequest;
+import com.fpmislata.daw.tienda.controller.webModel.request.PagoRequest;
+import com.fpmislata.daw.tienda.controller.webModel.request.PagoTarjetaRequest;
 import com.fpmislata.daw.tienda.domain.mapper.PeluqueriaMapper;
 import com.fpmislata.daw.tienda.domain.mapper.ProductoMapper;
 import com.fpmislata.daw.tienda.domain.mapper.SolicitudMapper;
@@ -19,6 +27,7 @@ import com.fpmislata.daw.tienda.domain.repository.SolicitudProductoRepository;
 import com.fpmislata.daw.tienda.domain.repository.SolicitudRepository;
 import com.fpmislata.daw.tienda.domain.repository.entity.SolicitudEntity;
 import com.fpmislata.daw.tienda.domain.service.AuthService;
+import com.fpmislata.daw.tienda.domain.service.BancoService;
 import com.fpmislata.daw.tienda.domain.service.PeluqueriaService;
 import com.fpmislata.daw.tienda.domain.service.ProductoService;
 import com.fpmislata.daw.tienda.domain.service.SolicitudService;
@@ -40,12 +49,16 @@ public class SolicitudServiceImpl implements SolicitudService {
         private final ProductoService productoService;
         private final UsuarioService usuarioService;
         private final AuthService authService;
+        private final BancoService bancoService;
 
         public SolicitudServiceImpl(SolicitudRepository solicitudRepository,
                         SolicitudProductoRepository solicitudProductoRepository,
                         SolicitudPeluqueriaRepository solicitudPeluqueriaRepository,
                         PeluqueriaService peluqueriaService,
-                        ProductoService productoService, UsuarioService usuarioService, AuthService authService) {
+                        ProductoService productoService,
+                        UsuarioService usuarioService,
+                        AuthService authService,
+                        BancoService bancoService) {
                 this.solicitudRepository = solicitudRepository;
                 this.solicitudProductoRepository = solicitudProductoRepository;
                 this.solicitudPeluqueriaRepository = solicitudPeluqueriaRepository;
@@ -53,7 +66,17 @@ public class SolicitudServiceImpl implements SolicitudService {
                 this.productoService = productoService;
                 this.usuarioService = usuarioService;
                 this.authService = authService;
+                this.bancoService = bancoService;
         }
+
+        @Value("${banco.thebarberhub.login}")
+        private String login;
+
+        @Value("${banco.thebarberhub.api_token}")
+        private String apiToken;
+
+        @Value("${banco.thebarberhub.iban}")
+        private String iban;
 
         @Override
         public SolicitudDto aprobarSolicitud(long solicitudId) {
@@ -118,7 +141,8 @@ public class SolicitudServiceImpl implements SolicitudService {
         }
 
         @Override
-        public SolicitudDto confirmarSolicitudPeluqueria(String token, long solicitudId) {
+        public SolicitudDto confirmarSolicitudPeluqueria(String token, long solicitudId,
+                        OrigenPagoTarjetaRequest origen) {
                 Solicitud solicitud = solicitudRepository.findById(solicitudId)
                                 .map(SolicitudMapper.getInstance()::fromEntityToModel)
                                 .orElseThrow(() -> new ResourceNotFoundException("Solicitud no encontrada."));
@@ -141,6 +165,12 @@ public class SolicitudServiceImpl implements SolicitudService {
                                 .map(SolicitudPeluqueriaMapper.getInstance()::fromEntityToModel)
                                 .orElseThrow(() -> new BusinessException("No se encontró la solicitud"));
 
+                bancoService.pagoTarjeta(new PagoTarjetaRequest(
+                                new AutorizacionRequest(login, apiToken),
+                                origen,
+                                new DestinoRequest(iban),
+                                new PagoRequest(BigDecimal.valueOf(50), "Suscripción a TheBarberHub")));
+
                 solicitud.setEstado(EstadoSolicitud.Confirmada);
 
                 Usuario usuario = UsuarioMapper.getInstance()
@@ -154,6 +184,7 @@ public class SolicitudServiceImpl implements SolicitudService {
                                 solicitudPeluqueria.getMunicipio(),
                                 solicitudPeluqueria.getDireccion(),
                                 solicitudPeluqueria.getTelefono(),
+                                bancoService.getIbanByNumeroTarjeta(origen.numeroTarjeta()),
                                 null,
                                 null);
 

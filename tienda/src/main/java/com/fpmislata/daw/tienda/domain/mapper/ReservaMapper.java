@@ -50,6 +50,7 @@ public class ReservaMapper {
                 reserva.getEstado(),
                 reserva.getCreatedAt(),
                 reserva.getUpdatedAt(),
+                reserva.getIban(),
                 mapModelProductos(reserva.getProductos()));
     }
 
@@ -88,6 +89,7 @@ public class ReservaMapper {
                 entity.estado(),
                 entity.createdAt(),
                 entity.updatedAt(),
+                entity.iban(),
                 mapEntityProductos(entity.productos()));
     }
 
@@ -126,6 +128,7 @@ public class ReservaMapper {
                 dto.estado(),
                 dto.createdAt(),
                 dto.updatedAt(),
+                dto.iban(),
                 mapDtoProductos(dto.productos()));
     }
 
@@ -158,6 +161,7 @@ public class ReservaMapper {
                 reserva.getEstado(),
                 reserva.getCreatedAt(),
                 reserva.getUpdatedAt(),
+                reserva.getIban(),
                 mapModelToDtoProductos(reserva.getProductos()));
     }
 

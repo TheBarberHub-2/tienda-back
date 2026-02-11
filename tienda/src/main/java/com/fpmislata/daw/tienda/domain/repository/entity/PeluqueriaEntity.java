@@ -8,6 +8,7 @@ public record PeluqueriaEntity(
         String municipio,
         String direccion,
         String telefono,
+        String iban,
         List<ProductoEntity> productos,
         List<PeluqueriaHorarioEntity> horarios) {
     public PeluqueriaEntity(
@@ -16,6 +17,7 @@ public record PeluqueriaEntity(
             String municipio,
             String direccion,
             String telefono,
+            String iban,
             List<ProductoEntity> productos,
             List<PeluqueriaHorarioEntity> horarios) {
         this.id = id;
@@ -23,6 +25,7 @@ public record PeluqueriaEntity(
         this.municipio = municipio;
         this.direccion = direccion;
         this.telefono = telefono;
+        this.iban = iban;
         this.productos = productos == null ? List.of() : List.copyOf(productos);
         this.horarios = horarios == null ? List.of() : List.copyOf(horarios);
     }

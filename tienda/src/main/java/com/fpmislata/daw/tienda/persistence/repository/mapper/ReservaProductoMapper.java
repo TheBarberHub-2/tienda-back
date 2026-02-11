@@ -57,6 +57,7 @@ public class ReservaProductoMapper {
                 reservaJpa.getEstado(),
                 reservaJpa.getCreatedAt(),
                 reservaJpa.getUpdatedAt(),
+                reservaJpa.getIban(),
                 null // ⚠️ NO mapeamos productos aquí
         );
 

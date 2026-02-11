@@ -12,16 +12,18 @@ public class Peluqueria {
     private String municipio;
     private String direccion;
     private String telefono;
+    private String iban;
     private List<Producto> productos;
     private List<PeluqueriaHorario> horarios;
 
-    public Peluqueria(Long id, Usuario usuario, String municipio, String direccion, String telefono,
+    public Peluqueria(Long id, Usuario usuario, String municipio, String direccion, String telefono, String iban,
             List<Producto> productos, List<PeluqueriaHorario> horarios) {
         this.id = id;
         this.usuario = usuario;
         this.municipio = municipio;
         this.direccion = direccion;
         this.telefono = telefono;
+        this.iban = iban;
         this.productos = (productos == null) ? new ArrayList<>() : new ArrayList<>(productos);
         this.horarios = (horarios == null) ? new ArrayList<>() : new ArrayList<>(horarios);
     }
@@ -64,6 +66,14 @@ public class Peluqueria {
 
     public void setTelefono(String telefono) {
         this.telefono = telefono;
+    }
+
+    public String getIban() {
+        return iban;
+    }
+
+    public void setIban(String iban) {
+        this.iban = iban;
     }
 
     public List<Producto> getProductos() {

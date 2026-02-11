@@ -46,6 +46,7 @@ public class ReservaProductoMapper {
                     reserva.getEstado(),
                     reserva.getCreatedAt(),
                     reserva.getUpdatedAt(),
+                    reserva.getIban(),
                     null);
         }
 
@@ -90,6 +91,7 @@ public class ReservaProductoMapper {
                     reservaEntity.estado(),
                     reservaEntity.createdAt(),
                     reservaEntity.updatedAt(),
+                    reservaEntity.iban(),
                     null);
         }
 

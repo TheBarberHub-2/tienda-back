@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.web.client.RestTemplate;
 
 import com.fpmislata.daw.tienda.domain.repository.CategoriaRepository;
 import com.fpmislata.daw.tienda.domain.repository.PeluqueriaHorarioRepository;
@@ -17,6 +18,7 @@ import com.fpmislata.daw.tienda.domain.repository.SolicitudProductoRepository;
 import com.fpmislata.daw.tienda.domain.repository.SolicitudRepository;
 import com.fpmislata.daw.tienda.domain.repository.UsuarioRepository;
 import com.fpmislata.daw.tienda.domain.service.AuthService;
+import com.fpmislata.daw.tienda.domain.service.BancoService;
 import com.fpmislata.daw.tienda.domain.service.CarritoService;
 import com.fpmislata.daw.tienda.domain.service.CategoriaService;
 import com.fpmislata.daw.tienda.domain.service.EmailService;
@@ -30,6 +32,7 @@ import com.fpmislata.daw.tienda.domain.service.SolicitudProductoService;
 import com.fpmislata.daw.tienda.domain.service.SolicitudService;
 import com.fpmislata.daw.tienda.domain.service.UsuarioService;
 import com.fpmislata.daw.tienda.domain.service.impl.AuthServiceImpl;
+import com.fpmislata.daw.tienda.domain.service.impl.BancoServiceImpl;
 import com.fpmislata.daw.tienda.domain.service.impl.CarritoServiceImpl;
 import com.fpmislata.daw.tienda.domain.service.impl.CategoriaServiceImpl;
 import com.fpmislata.daw.tienda.domain.service.impl.EmailServiceImpl;
@@ -158,9 +161,12 @@ public class SpringConfig {
             SolicitudProductoRepository solicitudProductoRepository,
             SolicitudPeluqueriaRepository solicitudPeluqueriaRepository,
             PeluqueriaService peluqueriaService,
-            ProductoService productoService, UsuarioService usuarioService, AuthService authService) {
+            ProductoService productoService,
+            UsuarioService usuarioService, AuthService authService,
+            BancoService bancoService) {
         return new SolicitudServiceImpl(solicitudRepository, solicitudProductoRepository,
-                solicitudPeluqueriaRepository, peluqueriaService, productoService, usuarioService, authService);
+                solicitudPeluqueriaRepository, peluqueriaService, productoService, usuarioService, authService,
+                bancoService);
     }
 
     @Bean
@@ -189,9 +195,10 @@ public class SpringConfig {
     @Bean
     public ReservaService reservaService(ReservaRepository reservaRepository,
             ReservaProductoRepository reservaProductoRepository, ProductoRepository productoRepository,
-            PeluqueriaHorarioRepository peluqueriaHorarioRepository, EmailService emailService) {
+            PeluqueriaHorarioRepository peluqueriaHorarioRepository, EmailService emailService,
+            BancoService bancoService) {
         return new ReservaServiceImpl(reservaRepository, reservaProductoRepository, productoRepository,
-                peluqueriaHorarioRepository, emailService);
+                peluqueriaHorarioRepository, emailService, bancoService);
     }
 
     @Bean
@@ -209,5 +216,15 @@ public class SpringConfig {
     @Bean
     public EmailService emailService(JavaMailSender mailSender) {
         return new EmailServiceImpl(mailSender);
+    }
+
+    @Bean
+    public BancoService bancoService() {
+        return new BancoServiceImpl();
+    }
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
     }
 }

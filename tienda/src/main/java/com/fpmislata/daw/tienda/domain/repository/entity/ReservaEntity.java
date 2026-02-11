@@ -19,6 +19,7 @@ public record ReservaEntity(
         EstadoReserva estado,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
+        String iban,
         List<ReservaProductoEntity> productos) {
 
     public ReservaEntity(
@@ -33,6 +34,7 @@ public record ReservaEntity(
             EstadoReserva estado,
             LocalDateTime createdAt,
             LocalDateTime updatedAt,
+            String iban,
             List<ReservaProductoEntity> productos) {
 
         this.id = id;
@@ -46,6 +48,7 @@ public record ReservaEntity(
         this.estado = estado;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.iban = iban;
         this.productos = productos == null ? List.of() : List.copyOf(productos);
     }
 }
