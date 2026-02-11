@@ -1,0 +1,24 @@
+{
+  "properties": [
+    {
+      "name": "banco.api.url",
+      "type": "java.lang.String",
+      "description": "URL del API del banco"
+    },
+    {
+      "name": "banco.thebarberhub.login",
+      "type": "java.lang.String",
+      "description": "Login del sistema TheBarberHub"
+    },
+    {
+      "name": "banco.thebarberhub.api_token",
+      "type": "java.lang.String",
+      "description": "Token de acceso para TheBarberHub"
+    },
+    {
+      "name": "banco.thebarberhub.iban",
+      "type": "java.lang.String",
+      "description": "IBAN asociado a TheBarberHub"
+    }
+  ]
+}

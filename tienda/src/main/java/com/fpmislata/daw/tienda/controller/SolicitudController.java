@@ -16,6 +16,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.fpmislata.daw.tienda.controller.mapper.SolicitudMapper;
+import com.fpmislata.daw.tienda.controller.webModel.request.OrigenPagoTarjetaRequest;
 import com.fpmislata.daw.tienda.controller.webModel.request.SolicitudPeluqueriaRequest;
 import com.fpmislata.daw.tienda.controller.webModel.request.SolicitudProductoRequest;
 import com.fpmislata.daw.tienda.controller.webModel.response.SolicitudDetailResponse;
@@ -165,12 +166,13 @@ public class SolicitudController {
 
         @RequireRole(roles = { Rol.Cliente })
         @PutMapping("/confirmar/peluqueria/{solicitudId}")
-        public ResponseEntity<SolicitudDetailResponse> confirmarSolicitudPeluqueria(@PathVariable long solicitudId) {
+        public ResponseEntity<SolicitudDetailResponse> confirmarSolicitudPeluqueria(@PathVariable long solicitudId,
+                        @RequestBody OrigenPagoTarjetaRequest origen) {
                 HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                                 .getRequest();
 
                 String token = request.getHeader("token");
-                SolicitudDto solicitudDto = solicitudService.confirmarSolicitudPeluqueria(token, solicitudId);
+                SolicitudDto solicitudDto = solicitudService.confirmarSolicitudPeluqueria(token, solicitudId, origen);
 
                 SolicitudDetailResponse response = SolicitudMapper.getInstance()
                                 .fromSolicitudToDetail(solicitudDto);

@@ -78,6 +78,7 @@ public class PeluqueriaMapper {
                 peluqueriaInsertRequest.municipio(),
                 peluqueriaInsertRequest.direccion(),
                 peluqueriaInsertRequest.telefono(),
+                peluqueriaInsertRequest.iban(),
                 null,
                 null);
     }
@@ -92,6 +93,7 @@ public class PeluqueriaMapper {
                 peluqueriaUpdateRequest.municipio(),
                 peluqueriaUpdateRequest.direccion(),
                 peluqueriaUpdateRequest.telefono(),
+                null,
                 null,
                 null);
     }

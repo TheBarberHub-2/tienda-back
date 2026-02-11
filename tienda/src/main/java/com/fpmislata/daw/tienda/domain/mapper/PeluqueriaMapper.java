@@ -49,6 +49,7 @@ public class PeluqueriaMapper {
                 peluqueria.getMunicipio(),
                 peluqueria.getDireccion(),
                 peluqueria.getTelefono(),
+                peluqueria.getIban(),
                 productos,
                 horarios);
     }
@@ -75,6 +76,7 @@ public class PeluqueriaMapper {
                 peluqueriaEntity.municipio(),
                 peluqueriaEntity.direccion(),
                 peluqueriaEntity.telefono(),
+                peluqueriaEntity.iban(),
                 productos,
                 horarios);
     }
@@ -101,6 +103,7 @@ public class PeluqueriaMapper {
                 peluqueriaDto.municipio(),
                 peluqueriaDto.direccion(),
                 peluqueriaDto.telefono(),
+                peluqueriaDto.iban(),
                 productos,
                 horarios);
     }
@@ -127,6 +130,7 @@ public class PeluqueriaMapper {
                 peluqueria.getMunicipio(),
                 peluqueria.getDireccion(),
                 peluqueria.getTelefono(),
+                peluqueria.getIban(),
                 productos,
                 horarios);
     }

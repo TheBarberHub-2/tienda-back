@@ -15,7 +15,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.fpmislata.daw.tienda.controller.mapper.ReservaMapper;
-import com.fpmislata.daw.tienda.controller.webModel.request.ReservaInsertRequest;
+import com.fpmislata.daw.tienda.controller.webModel.request.CrearReservaRequest;
 import com.fpmislata.daw.tienda.controller.webModel.response.ReservaResponse;
 import com.fpmislata.daw.tienda.domain.service.AuthService;
 import com.fpmislata.daw.tienda.domain.service.PeluqueriaService;
@@ -60,7 +60,7 @@ public class ReservaController {
 
         @RequireRole(roles = { Rol.Admin, Rol.Cliente })
         @PostMapping("/crear")
-        public ResponseEntity<ReservaResponse> crearReserva(@RequestBody ReservaInsertRequest request) {
+        public ResponseEntity<ReservaResponse> crearReserva(@RequestBody CrearReservaRequest request) {
 
                 HttpServletRequest httpRequest = ((ServletRequestAttributes) RequestContextHolder
                                 .getRequestAttributes())
@@ -68,14 +68,14 @@ public class ReservaController {
 
                 String token = httpRequest.getHeader("token");
 
-                UsuarioDto usuarioDto = usuarioService.getById(request.clienteId());
+                UsuarioDto usuarioDto = usuarioService.getById(request.reserva().clienteId());
                 UsuarioDto logged = authService.getByToken(token);
 
                 if (!usuarioDto.id().equals(logged.id())) {
                         throw new BusinessException("Solo puedes hacer reservas a tu nombre");
                 }
-                PeluqueriaDto peluqueriaDto = peluqueriaService.getById(request.peluqueriaId());
-                List<Long> ids = request.productoIds();
+                PeluqueriaDto peluqueriaDto = peluqueriaService.getById(request.reserva().peluqueriaId());
+                List<Long> ids = request.reserva().productoIds();
                 List<ProductoDto> productoDtos = productoService.findByIds(ids);
 
                 if (productoDtos.size() != ids.size()) {
@@ -89,12 +89,13 @@ public class ReservaController {
                                                 p))
                                 .toList();
 
-                ReservaDto reservaDto = ReservaMapper.getInstance().fromRequestToDto(request, usuarioDto, peluqueriaDto,
+                ReservaDto reservaDto = ReservaMapper.getInstance().fromRequestToDto(request.reserva(), usuarioDto,
+                                peluqueriaDto,
                                 reservaProductoDtos);
 
                 DtoValidator.validate(reservaDto);
 
-                ReservaDto creada = reservaService.crearReserva(reservaDto);
+                ReservaDto creada = reservaService.crearReserva(reservaDto, request.origen());
 
                 ReservaResponse response = ReservaMapper.getInstance().fromDtoToResponse(creada);
 

@@ -7,6 +7,15 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
+
+import com.fpmislata.daw.tienda.controller.webModel.request.AutorizacionRequest;
+import com.fpmislata.daw.tienda.controller.webModel.request.DestinoRequest;
+import com.fpmislata.daw.tienda.controller.webModel.request.OrigenPagoTarjetaRequest;
+import com.fpmislata.daw.tienda.controller.webModel.request.OrigenTransferencia;
+import com.fpmislata.daw.tienda.controller.webModel.request.PagoRequest;
+import com.fpmislata.daw.tienda.controller.webModel.request.PagoTarjetaRequest;
+import com.fpmislata.daw.tienda.controller.webModel.request.TransferenciaRequest;
 import com.fpmislata.daw.tienda.domain.mapper.PeluqueriaMapper;
 import com.fpmislata.daw.tienda.domain.mapper.ProductoMapper;
 import com.fpmislata.daw.tienda.domain.mapper.ReservaMapper;
@@ -19,6 +28,7 @@ import com.fpmislata.daw.tienda.domain.repository.entity.PeluqueriaHorarioEntity
 import com.fpmislata.daw.tienda.domain.repository.entity.ProductoEntity;
 import com.fpmislata.daw.tienda.domain.repository.entity.ReservaEntity;
 import com.fpmislata.daw.tienda.domain.repository.entity.ReservaProductoEntity;
+import com.fpmislata.daw.tienda.domain.service.BancoService;
 import com.fpmislata.daw.tienda.domain.service.EmailService;
 import com.fpmislata.daw.tienda.domain.service.ReservaService;
 import com.fpmislata.daw.tienda.domain.service.dto.ReservaDto;
@@ -33,22 +43,35 @@ public class ReservaServiceImpl implements ReservaService {
     private final ProductoRepository productoRepository;
     private final PeluqueriaHorarioRepository peluqueriaHorarioRepository;
     private final EmailService emailService;
+    private final BancoService bancoService;
 
     public ReservaServiceImpl(
             ReservaRepository reservaRepository,
             ReservaProductoRepository reservaProductoRepository,
             ProductoRepository productoRepository,
-            PeluqueriaHorarioRepository horarioRepository, EmailService emailService) {
+            PeluqueriaHorarioRepository horarioRepository,
+            EmailService emailService,
+            BancoService bancoService) {
 
         this.reservaRepository = reservaRepository;
         this.reservaProductoRepository = reservaProductoRepository;
         this.productoRepository = productoRepository;
         this.peluqueriaHorarioRepository = horarioRepository;
         this.emailService = emailService;
+        this.bancoService = bancoService;
     }
 
+    @Value("${banco.thebarberhub.login}")
+    private String login;
+
+    @Value("${banco.thebarberhub.api_token}")
+    private String apiToken;
+
+    @Value("${banco.thebarberhub.iban}")
+    private String iban;
+
     @Override
-    public ReservaDto crearReserva(ReservaDto dto) {
+    public ReservaDto crearReserva(ReservaDto dto, OrigenPagoTarjetaRequest origen) {
         validarFecha(dto.fechaReserva());
         validarMinutos(dto.horaInicio());
 
@@ -73,6 +96,13 @@ public class ReservaServiceImpl implements ReservaService {
 
         validarSolapamientos(dto.peluqueria().id(), dto.fechaReserva(), dto.horaInicio(), horaFinal);
 
+        bancoService.pagoTarjeta(
+                new PagoTarjetaRequest(
+                        new AutorizacionRequest(login, apiToken),
+                        origen,
+                        new DestinoRequest(iban),
+                        new PagoRequest(BigDecimal.valueOf(precioTotal), "Pago Reserva")));
+
         ReservaEntity entity = new ReservaEntity(
                 null,
                 UsuarioMapper.getInstance()
@@ -87,6 +117,7 @@ public class ReservaServiceImpl implements ReservaService {
                 EstadoReserva.Pendiente,
                 LocalDateTime.now(),
                 null,
+                bancoService.getIbanByNumeroTarjeta(origen.numeroTarjeta()),
                 List.of());
 
         ReservaEntity saved = reservaRepository.save(entity);
@@ -120,6 +151,7 @@ public class ReservaServiceImpl implements ReservaService {
                 EstadoReserva.Pendiente,
                 saved.createdAt(),
                 saved.updatedAt(),
+                saved.iban(),
                 productosDto);
     }
 
@@ -302,11 +334,19 @@ public class ReservaServiceImpl implements ReservaService {
                 EstadoReserva.Cancelada,
                 reserva.createdAt(),
                 LocalDateTime.now(),
+                reserva.iban(),
                 reserva.productos());
 
         reservaRepository.save(updated);
 
         emailService.enviarCancelacionPeluqueria(reserva);
+
+        bancoService.transferencia(
+                new TransferenciaRequest(
+                        new AutorizacionRequest(login, apiToken),
+                        new OrigenTransferencia(iban),
+                        new DestinoRequest(reserva.iban()),
+                        new PagoRequest(BigDecimal.valueOf(reserva.precioTotal()), "Cancelación de reserva")));
 
         return ReservaMapper.getInstance().fromModelToDto(ReservaMapper.getInstance().fromEntityToModel(updated));
     }
@@ -333,11 +373,19 @@ public class ReservaServiceImpl implements ReservaService {
                 EstadoReserva.Cancelada,
                 reserva.createdAt(),
                 LocalDateTime.now(),
+                reserva.iban(),
                 reserva.productos());
 
         reservaRepository.save(updated);
 
         emailService.enviarCancelacionCliente(reserva);
+
+        bancoService.transferencia(
+                new TransferenciaRequest(
+                        new AutorizacionRequest(login, apiToken),
+                        new OrigenTransferencia(iban),
+                        new DestinoRequest(reserva.iban()),
+                        new PagoRequest(BigDecimal.valueOf(reserva.precioTotal()), "Cancelación de reserva")));
 
         return ReservaMapper.getInstance()
                 .fromModelToDto(ReservaMapper.getInstance().fromEntityToModel(updated));
@@ -372,9 +420,19 @@ public class ReservaServiceImpl implements ReservaService {
                 EstadoReserva.Completada,
                 reserva.createdAt(),
                 LocalDateTime.now(),
+                reserva.iban(),
                 reserva.productos());
 
         reservaRepository.save(updated);
+
+        double importePeluqueria = reserva.precioTotal() * 0.95;
+
+        bancoService.transferencia(
+                new TransferenciaRequest(
+                        new AutorizacionRequest(login, apiToken),
+                        new OrigenTransferencia(iban),
+                        new DestinoRequest(reserva.peluqueria().iban()),
+                        new PagoRequest(BigDecimal.valueOf(importePeluqueria), "Pago Reserva Peluquería")));
 
         return ReservaMapper.getInstance()
                 .fromModelToDto(ReservaMapper.getInstance().fromEntityToModel(updated));
