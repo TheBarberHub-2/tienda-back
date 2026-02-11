@@ -21,5 +21,7 @@ public interface SolicitudRepository {
 
     SolicitudEntity save(SolicitudEntity solicitud);
 
+    List<SolicitudEntity> findAll(int page, int size);
+
     long count();
 }

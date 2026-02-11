@@ -67,4 +67,11 @@ public class SolicitudRepositoryImpl implements SolicitudRepository {
     public long count() {
         return solicitudJpaDao.count();
     }
+
+    @Override
+    public List<SolicitudEntity> findAll(int page, int size) {
+        return solicitudJpaDao.findAll(page, size).stream()
+                .map(SolicitudMapper.getInstance()::fromJpaToEntity)
+                .toList();
+    }
 }

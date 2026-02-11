@@ -23,5 +23,7 @@ public interface SolicitudJpaDao {
 
     List<SolicitudJpaEntity> findAprobadas();
 
+    List<SolicitudJpaEntity> findAll(int page, int size);
+
     long count();
 }

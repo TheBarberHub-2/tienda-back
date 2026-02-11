@@ -28,6 +28,10 @@ public class RoleAspect {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                 .getRequest();
 
+        if (request.getMethod().equals("OPTIONS")) {
+            return;
+        }
+
         String token = request.getHeader("token");
         UsuarioDto u = authService.getByToken(token);
 

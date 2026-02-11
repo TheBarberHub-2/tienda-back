@@ -72,6 +72,17 @@ public class SolicitudJpaDaoImpl implements SolicitudJpaDao {
     }
 
     @Override
+    public List<SolicitudJpaEntity> findAll(int page, int size) {
+        int pageIndex = Math.max(page - 1, 0);
+
+        String sql = "SELECT s FROM SolicitudJpaEntity s ORDER BY s.id";
+        TypedQuery<SolicitudJpaEntity> query = entityManager.createQuery(sql, SolicitudJpaEntity.class)
+                .setFirstResult(pageIndex * size).setMaxResults(size);
+
+        return query.getResultList();
+    }
+
+    @Override
     public long count() {
         return entityManager.createQuery("SELECT COUNT(s) FROM SolicitudJpaEntity s", Long.class)
                 .getSingleResult();

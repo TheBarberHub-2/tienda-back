@@ -33,6 +33,10 @@ public class SamePeluqueriaAspect {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                 .getRequest();
 
+        if (request.getMethod().equals("OPTIONS")) {
+            return;
+        }
+
         String token = request.getHeader("token");
 
         UsuarioDto usuario = authService.getByToken(token);
