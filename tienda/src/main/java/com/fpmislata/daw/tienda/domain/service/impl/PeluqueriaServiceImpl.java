@@ -141,4 +141,14 @@ public class PeluqueriaServiceImpl implements PeluqueriaService {
                                 .fromEntityToModel(peluqueriaRepository.findByUsuario(usuarioId).orElseThrow(
                                                 () -> new ResourceNotFoundException("Peluqueria no encontrada"))));
         }
+
+        @Override
+        public PeluqueriaDto findByEmail(String email) {
+                PeluqueriaDto peluqueria = getAll().stream()
+                                .filter(p -> p.usuario().email().equals(email))
+                                .findFirst()
+                                .orElse(null);
+
+                return peluqueria;
+        }
 }

@@ -26,4 +26,6 @@ public interface PeluqueriaService {
     void delete(long id);
 
     PeluqueriaDto findByUsuario(long usuarioId);
+
+    PeluqueriaDto findByEmail(String email);
 }

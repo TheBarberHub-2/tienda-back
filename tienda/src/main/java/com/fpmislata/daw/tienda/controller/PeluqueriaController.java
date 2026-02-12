@@ -116,4 +116,14 @@ public class PeluqueriaController {
                 peluqueriaService.delete(id);
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
+
+        @RequireRole(roles = { Rol.Peluqueria })
+        @GetMapping("/by-email")
+        public ResponseEntity<PeluqueriaDetailResponse> findByEmail(@RequestParam String email) {
+                PeluqueriaDto peluqueriaDto = peluqueriaService.findByEmail(email);
+
+                PeluqueriaDetailResponse response = PeluqueriaMapper.getInstance().fromDtoToDetail(peluqueriaDto);
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+        }
 }
