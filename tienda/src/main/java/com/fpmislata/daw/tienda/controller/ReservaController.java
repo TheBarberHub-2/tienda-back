@@ -262,4 +262,12 @@ public class ReservaController {
 
                 return new ResponseEntity<>(response, HttpStatus.OK);
         }
+
+        @RequireRole(roles = { Rol.Peluqueria })
+        @GetMapping("/peluqueria/{peluqueriaId}/hoy")
+        public ResponseEntity<Integer> getReservasHoy(@PathVariable long peluqueriaId) {
+                int totalHoy = reservaService.getReservasToday(peluqueriaId);
+
+                return new ResponseEntity<>(totalHoy, HttpStatus.OK);
+        }
 }

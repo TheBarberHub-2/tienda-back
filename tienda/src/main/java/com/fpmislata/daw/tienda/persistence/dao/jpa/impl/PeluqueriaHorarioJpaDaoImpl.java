@@ -68,7 +68,7 @@ public class PeluqueriaHorarioJpaDaoImpl implements PeluqueriaHorarioJpaDao {
 
     @Override
     public List<PeluqueriaHorarioJpaEntity> findByPeluqueria(long peluqueriaId) {
-        String sql = "SELECT p FROM PeluqueriaHorarioJpaEntity p WHERE p.peluqueria.id = :peluqueriaId";
+        String sql = "SELECT p FROM PeluqueriaHorarioJpaEntity p WHERE p.peluqueria.id = :peluqueriaId ORDER BY p.diaSemana, p.horaApertura";
         return entityManager.createQuery(sql, PeluqueriaHorarioJpaEntity.class)
                 .setParameter("peluqueriaId", peluqueriaId)
                 .getResultList();

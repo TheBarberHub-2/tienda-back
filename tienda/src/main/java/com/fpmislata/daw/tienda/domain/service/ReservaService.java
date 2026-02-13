@@ -21,4 +21,6 @@ public interface ReservaService {
     ReservaDto cancelarReservaPorPeluqueria(long reservaId, long peluqueriaId);
 
     ReservaDto confirmarReserva(long reservaId, long peluqueriaId);
+
+    int getReservasToday(long peluqueriaId);
 }

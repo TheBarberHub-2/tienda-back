@@ -400,13 +400,15 @@ public class ReservaServiceImpl implements ReservaService {
             throw new BusinessException("La reserva ya no puede completarse");
         }
 
-        LocalDateTime fechaHoraReserva = LocalDateTime.of(
-                reserva.fechaReserva(),
-                reserva.horaFinal());
-
-        if (LocalDateTime.now().isBefore(fechaHoraReserva)) {
-            throw new BusinessException("No puedes completar una reserva no acabada");
-        }
+        /*
+         * LocalDateTime fechaHoraReserva = LocalDateTime.of(
+         * reserva.fechaReserva(),
+         * reserva.horaFinal());
+         * 
+         * if (LocalDateTime.now().isBefore(fechaHoraReserva)) {
+         * throw new BusinessException("No puedes completar una reserva no acabada");
+         * }
+         */
 
         ReservaEntity updated = new ReservaEntity(
                 reserva.id(),
@@ -436,5 +438,14 @@ public class ReservaServiceImpl implements ReservaService {
 
         return ReservaMapper.getInstance()
                 .fromModelToDto(ReservaMapper.getInstance().fromEntityToModel(updated));
+    }
+
+    @Override
+    public int getReservasToday(long peluqueriaId) {
+        LocalDate hoy = LocalDate.now();
+
+        return (int) listarReservasPeluqueria(peluqueriaId).stream()
+                .filter(r -> r.fechaReserva().isEqual(hoy))
+                .count();
     }
 }
